@@ -127,39 +127,7 @@ export default function FeedbackForm() {
     <div style={{ minHeight: "100vh", background: "#f8faf8" }}>
       <style>{STYLES}</style>
 
-      {/* Header */}
-      <div style={{ background: "#030712", color: "#fff", padding: "0" }}>
-        {/* Top strip */}
-        <div style={{ background: "#022c22", padding: "6px 40px", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#4ade80" }}>
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", display: "inline-block" }} />
-          CityCare Climate AI — Community Feedback Portal
-        </div>
-        {/* Nav */}
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: "#111827", border: "1px solid #166534", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg viewBox="0 0 32 32" width="24" height="24">
-                <circle cx="16" cy="16" r="13" fill="none" stroke="#4ade80" strokeWidth="1.5" />
-                <path d="M16 5 C10 5 7 10 7 14 C7 19.5 11.5 23 16 27 C20.5 23 25 19.5 25 14 C25 10 22 5 16 5Z" fill="#4ade80" opacity="0.9" />
-                <path d="M13 9 C10 11 9 15 11 18" fill="none" stroke="#166534" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </div>
-            <div>
-              <div style={{ fontWeight: 900, fontSize: 18, color: "#fff", lineHeight: 1 }}>CityCare</div>
-              <div style={{ fontSize: 9, color: "#4ade80", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>Climate AI</div>
-            </div>
-          </div>
-          <a href="#" style={{ color: "#9ca3af", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}
-            onMouseEnter={e => e.currentTarget.style.color = "#fff"}
-            onMouseLeave={e => e.currentTarget.style.color = "#9ca3af"}
-          >
-            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Dashboard
-          </a>
-        </div>
-      </div>
+      
 
       {/* Hero banner */}
       <div style={{ background: "linear-gradient(135deg, #022c22 0%, #14532d 50%, #166534 100%)", padding: "48px 40px", textAlign: "center" }}>
