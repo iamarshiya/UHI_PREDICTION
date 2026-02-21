@@ -2,7 +2,7 @@ import requests
 import ee
 import os
 
-ee.Initialize(project="dynamic-transit-488115-s8")
+ee.Initialize(project="project-7d1a0aae-b957-46be-aa3")
 
 API_KEY = "AIzaSyDLJ41jOwhZCitWvqc7ot8UAPsvGVTxq4o"
 

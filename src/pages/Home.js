@@ -23,7 +23,7 @@ function Navbar() {
         </span>
         <div style={{ display: "flex", gap: 24 }}>
           <a href="#" style={{ color: "#9ca3af", textDecoration: "none" }}>Research</a>
-          <a href="#" style={{ color: "#9ca3af", textDecoration: "none" }}>City Dashboard</a>
+          <a href="/dashboard" style={{ color: "#9ca3af", textDecoration: "none" }}>City Dashboard</a>
         </div>
       </div>
 
@@ -67,11 +67,6 @@ function Navbar() {
               >{link}</a>
             ))}
           </div>
-
-          {/* Sign Up */}
-          <button style={{ background: "#7ed321", color: "#fff", fontWeight: 700, fontSize: 13, padding: "9px 22px", borderRadius: 999, border: "none", cursor: "pointer", flexShrink: 0, boxShadow: "0 2px 12px rgba(126,211,33,0.35)" }}>
-            Sign Up Free
-          </button>
         </div>
 
         {/* ── Community Feedback strip ── */}
@@ -440,6 +435,144 @@ function ChatBot() {
 }
 
 /* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+function Footer() {
+  const cols = [
+    {
+      heading: "Platform",
+      links: ["Risk Mapping", "Early Warning", "Compliance Reports", "API Access"],
+    },
+    {
+      heading: "Company",
+      links: ["About Us", "Careers", "Press", "Blog"],
+    },
+    {
+      heading: "Resources",
+      links: ["Case Studies", "Research Papers", "Documentation", "City Dashboard"],
+    },
+  ];
+
+  const social = [
+    {
+      label: "in",
+      path: "M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 6a2 2 0 100-4 2 2 0 000 4z",
+    },
+    {
+      label: "tw",
+      path: "M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z",
+    },
+    {
+      label: "gh",
+      path: "M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22",
+    },
+  ];
+
+  return (
+    <footer style={{ background: "#030712", color: "#9ca3af", paddingTop: 64, paddingBottom: 0 }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px" }}>
+
+        {/* ── Top grid: brand + 3 link cols ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1fr", gap: 48, paddingBottom: 48 }}>
+
+          {/* Brand col */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Logo */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: "#111827", border: "1px solid #166534", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <svg viewBox="0 0 32 32" width="24" height="24">
+                  <circle cx="16" cy="16" r="13" fill="none" stroke="#4ade80" strokeWidth="1.5" />
+                  <path d="M16 5 C10 5 7 10 7 14 C7 19.5 11.5 23 16 27 C20.5 23 25 19.5 25 14 C25 10 22 5 16 5Z" fill="#4ade80" opacity="0.9" />
+                  <path d="M13 9 C10 11 9 15 11 18" fill="none" stroke="#166534" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontWeight: 900, fontSize: 18, color: "#fff", lineHeight: 1 }}>CityCare</div>
+                <div style={{ fontSize: 9, color: "#4ade80", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>Climate AI</div>
+              </div>
+            </div>
+
+            <p style={{ fontSize: 13, lineHeight: 1.7, color: "#6b7280", maxWidth: 240 }}>
+              AI-powered climate risk intelligence for smarter, more resilient cities worldwide.
+            </p>
+
+            {/* Social icons */}
+            <div style={{ display: "flex", gap: 10 }}>
+              {social.map((s) => (
+                <a key={s.label} href="#" style={{
+                  width: 34, height: 34, borderRadius: "50%", background: "#1f2937",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "background 0.2s"
+                }}
+                  onMouseEnter={e => e.currentTarget.style.background = "#16a34a"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#1f2937"}
+                >
+                  <svg width="14" height="14" fill="none" stroke="#9ca3af" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={s.path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Link columns */}
+          {cols.map((col) => (
+            <div key={col.heading}>
+              <h4 style={{ color: "#fff", fontWeight: 700, fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 16 }}>
+                {col.heading}
+              </h4>
+              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+                {col.links.map((link) => (
+                  <li key={link}>
+                    <a href="#" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none", transition: "color 0.2s" }}
+                      onMouseEnter={e => e.target.style.color = "#fff"}
+                      onMouseLeave={e => e.target.style.color = "#6b7280"}
+                    >{link}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Divider ── */}
+        <div style={{ borderTop: "1px solid #1f2937" }} />
+
+        {/* ── Bottom bar ── */}
+        <div style={{ padding: "20px 0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+
+          {/* Copyright */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#4b5563" }}>
+            <svg width="14" height="14" fill="none" stroke="#4ade80" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" strokeWidth="1.5" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.83 9.17a4 4 0 100 5.66" />
+            </svg>
+            <span>© 2026 <strong style={{ color: "#e5e7eb", fontWeight: 700 }}>CityCare</strong>. All rights reserved.</span>
+          </div>
+
+          {/* Legal links */}
+          <div style={{ display: "flex", gap: 24 }}>
+            {["Privacy Policy", "Terms of Service", "Accessibility"].map((link) => (
+              <a key={link} href="#" style={{ fontSize: 12, color: "#4b5563", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = "#fff"}
+                onMouseLeave={e => e.target.style.color = "#4b5563"}
+              >{link}</a>
+            ))}
+          </div>
+
+          {/* Made with badge */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#4b5563" }}>
+            <span>Made with</span>
+            <span style={{ color: "#4ade80", fontWeight: 700, fontSize: 14 }}>♻</span>
+            <span>for the planet</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ══════════════════════════════════════════
    APP
 ══════════════════════════════════════════ */
 export default function App() {
@@ -462,6 +595,7 @@ export default function App() {
       `}</style>
       <Navbar />
       <Hero />
+      <Footer />
       <ChatBot />
     </div>
   );

@@ -19,7 +19,10 @@ def fetch_and_print_pune_report():
             
         data = resp.json()
         
-        localities = list(set([f["properties"].get("locality", "Unknown") for f in data["features"] if f["properties"].get("locality", "Unknown") != "Unknown"]))
+        raw_localities = [f["properties"].get("locality", "Unknown") for f in data["features"]]
+        # Filter out "Unknown", empty strings, or strings that are just whitespace
+        valid_localities = [loc.strip() for loc in raw_localities if loc and loc.strip() and loc.strip() != "Unknown"]
+        localities = list(set(valid_localities))
         
         log("\n=========== AVAILABLE LOCALITIES ===========")
         for i, loc in enumerate(sorted(localities), start=1):
@@ -39,32 +42,38 @@ def fetch_and_print_pune_report():
         if sample_feature:
             sample = sample_feature["properties"]
             coords = sample_feature["geometry"]["coordinates"]
-            log(f"\n================ SMART CITY REPORT ================\n")
-            log(f"📍 Location Point: {sample['locality']} ({coords[1]:.4f}, {coords[0]:.4f})")
-            log(f"🌡 Live Ambient Temp: {sample['ambient_temp_celsius']} °C")
-            log(f"🏠 Livability Status: {sample['livability_status']}")
-            log(f"🧠 AI Summary: {sample['health_summary']}")
+            log(f"\n================ SMART HEAT RISK REPORT ================\n")
+            log(f"📍 Locality: {sample['locality']}\n")
 
-            log(f"\n🔥 Heat Risk Score: {sample['risk']:.2f} /100")
-            log(f"🌱 Green Deficit: {sample['green_deficit']}")
-            log(f"❄  Cooling Potential: {sample['cooling_potential']} °C")
-            log(f"👥 People at Risk (est): {sample.get('people_at_risk', 'Unknown')}")
-            log(f"⏳ Future Risk (3 months): {sample['future_risk_3months']}")
-            
-            if sample.get('early_warning'):
-                log(f"🚨 EARLY WARNING: High Risk Trend Detected!")
+            log(f"🔥 Heat Risk Score: {sample['risk']:.2f}")
+            log(f"   Optimal: < 30 | Moderate: 30 – 60 | High: > 60\n")
 
-            log("\n🔍 Main Statistical Drivers mapping to Risk:")
+            log(f"🧠 Main Heat Drivers:")
             for d in sample.get("top_drivers", []):
                 log("   • " + d)
 
-            log("\n🛠 AI Recommended Interventions for this Coordinate:\n")
+            log(f"\n🌱 Green Deficit: {sample['green_deficit']} %")
+            log(f"   Optimal: < 20 | Concerning: 20 – 40 | Critical: > 40\n")
+
+            log(f"❄ Cooling Potential: {sample['cooling_potential']} %")
+            log(f"   Optimal: > 60 | Concerning: 30 – 60 | Critical: < 30\n")
+
+            log(f"👥 People at Risk: {sample.get('people_at_risk', 'Unknown')} persons")
+            log(f"   Optimal: < 500 | Concerning: 500 – 2000 | Critical: > 2000\n")
+
+            log(f"⏳ Future Risk (3 months): {sample['future_risk_3months']}")
+            log(f"   Optimal: < 40 | Concerning: 40 – 70 | Critical: > 70\n")
+            
+            if sample.get('early_warning'):
+                log(f"🚨 EARLY WARNING: High Risk Trend Detected!\n")
+
+            log(f"🛡 Urban Resilience Score: {sample['resilience_score']:.2f}\n")
+
+            log("🛠 AI-Recommended Mitigation Actions:\n")
             for s in sample.get("mitigation_actions", []):
                 log("   • " + s)
 
-            log(f"\n🛡 Urban Resilience Score: {sample['resilience_score']:.2f}")
-
-            log("\n===================================================\n")
+            log("\n=======================================================\n")
             
     except Exception as e:
         log(f"Failed to connect to backend: {e}")

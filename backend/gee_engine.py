@@ -7,7 +7,7 @@ import datetime
 
 print("IMPORTS DONE")
 
-ee.Initialize(project="dynamic-transit-488115-s8")
+ee.Initialize(project="project-7d1a0aae-b957-46be-aa3")
 
 def mask_s2_clouds(image):
     qa = image.select('QA60')

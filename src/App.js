@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -17,17 +16,16 @@ import "./App.css";
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/about" element={<Mitigation />} />
+        <Route path="/about" element={<about />} />
         <Route path="/riskmap" element={<Riskmap />} />
         <Route path="/forecast" element={<Forecast />} />
         <Route path="/locality" element={<Locality />} />
         <Route path="/mitigation" element={<Mitigation />} />
-        <Route path="Contact" element={<Contact />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/feature" element={<Feature />} />
         <Route path="/chatbot" element={<Chatbot />} />
       </Routes>

@@ -146,54 +146,60 @@ Fetching live satellite and weather data... (This takes about ~25 seconds)
 142. शिवशंभो पार्क
 
 🏆 TOP 10 MOST LIVABLE LOCALITIES IN PUNE:
-  1. Chambli (Livability Index: 79.80)
-  2. Kodit Bk. (Livability Index: 78.70)
-  3. Dive (Livability Index: 78.40)
-  4. Saykarwadi (Livability Index: 78.40)
-  5. Shivare (Livability Index: 77.81)
-  6. Varve Bk (Livability Index: 77.60)
-  7. शिवशंभो पार्क (Livability Index: 77.20)
-  8. Naigaon (Livability Index: 77.20)
-  9. Manjari Khurd (Livability Index: 76.90)
-  10. Gaud Dara (Livability Index: 76.69)
+  1. Chambli (Livability Index: 80.64)
+  2. Kodit Bk. (Livability Index: 79.54)
+  3. Saykarwadi (Livability Index: 79.24)
+  4. Dive (Livability Index: 79.24)
+  5. Shivare (Livability Index: 78.65)
+  6. Varve Bk (Livability Index: 78.44)
+  7. शिवशंभो पार्क (Livability Index: 78.04)
+  8. Naigaon (Livability Index: 78.04)
+  9. Manjari Khurd (Livability Index: 77.74)
+  10. Gaud Dara (Livability Index: 77.53)
 
 🚨 TOP 10 LEAST LIVABLE LOCALITIES IN PUNE:
-  1. Phase-3 (Livability Index: 64.27)
-  2. Ganesh Peth (Livability Index: 67.04)
-  3. Ganesh Nagar Chikhali (Livability Index: 67.04)
-  4. Sus (Livability Index: 69.25)
-  5. Kalwad (Livability Index: 69.25)
-  6. Sai Nagar (Livability Index: 69.45)
-  7. Rakshak Nagar (Livability Index: 69.65)
-  8. M I D C Technology Park (Livability Index: 69.85)
-  9. Narayan Peth (Livability Index: 69.85)
-  10. Keshav Nagar (Livability Index: 69.88)
+  1. Phase-3 (Livability Index: 65.11)
+  2. Ganesh Nagar Chikhali (Livability Index: 67.88)
+  3. Ganesh Peth (Livability Index: 67.88)
+  4. Kalwad (Livability Index: 70.09)
+  5. Sus (Livability Index: 70.09)
+  6. Sai Nagar (Livability Index: 70.29)
+  7. Rakshak Nagar (Livability Index: 70.49)
+  8. Narayan Peth (Livability Index: 70.69)
+  9. M I D C Technology Park (Livability Index: 70.69)
+  10. Keshav Nagar (Livability Index: 70.72)
 
-================ SMART CITY REPORT ================
+================ SMART HEAT RISK REPORT ================
 
-📍 Location Point: Sus (18.5543, 73.7642)
-🌡 Live Ambient Temp: 23.8 °C
-🏠 Livability Status: Moderately Livable
-🧠 AI Summary: Thermal comfort is acceptable but vegetation loss and urban density are beginning to affect living conditions.
+📍 Locality: Sus
 
-🔥 Heat Risk Score: 26.19 /100
-🌱 Green Deficit: 0.49
-❄  Cooling Potential: 1.96 °C
-👥 People at Risk (est): 3000
-⏳ Future Risk (3 months): 27.5
+🔥 Heat Risk Score: 25.14
+   Optimal: < 30 | Moderate: 30 – 60 | High: > 60
 
-🔍 Main Statistical Drivers mapping to Risk:
+🧠 Main Heat Drivers:
    • NDVI
    • Slope
    • EVI
 
-🛠 AI Recommended Interventions for this Coordinate:
+🌱 Green Deficit: 0.49 %
+   Optimal: < 20 | Concerning: 20 – 40 | Critical: > 40
 
-   • Create pocket parks and green buffers
+❄ Cooling Potential: 1.96 %
+   Optimal: > 60 | Concerning: 30 – 60 | Critical: < 30
+
+👥 People at Risk: 3000 persons
+   Optimal: < 500 | Concerning: 500 – 2000 | Critical: > 2000
+
+⏳ Future Risk (3 months): 26.39
+   Optimal: < 40 | Concerning: 40 – 70 | Critical: > 70
+
+🛡 Urban Resilience Score: 74.86
+
+🛠 AI-Recommended Mitigation Actions:
+
    • Vertical gardening on buildings
    • Increase roadside tree plantation
+   • Create pocket parks and green buffers
 
-🛡 Urban Resilience Score: 73.81
-
-===================================================
+=======================================================
 
