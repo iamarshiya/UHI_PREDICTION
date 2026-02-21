@@ -8,6 +8,8 @@ import Forecast from "./pages/Forecast";
 import Locality from "./pages/location";
 import Mitigation from "./pages/Mitigation";
 import about from "./pages/about";
+import Contact from "./pages/Contact";
+import Feature from "./pages/Feature";
 import Chatbot from "./components/chatbot";
 
 import "./App.css";
@@ -25,6 +27,8 @@ function App() {
         <Route path="/forecast" element={<Forecast />} />
         <Route path="/locality" element={<Locality />} />
         <Route path="/mitigation" element={<Mitigation />} />
+        <Route path="Contact" element={<Contact />} />
+        <Route path="/feature" element={<Feature />} />
         <Route path="/chatbot" element={<Chatbot />} />
       </Routes>
     </BrowserRouter>
