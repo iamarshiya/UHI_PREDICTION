@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /* ================= ICONS ================= */
 
@@ -41,6 +41,10 @@ const Toast = ({ message, show }) => (
 export default function Dashboard() {
   const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
+  useEffect(() => {
+    console.log("Loaded Google Maps Key:", GOOGLE_MAPS_API_KEY);
+  }, [GOOGLE_MAPS_API_KEY]);
+
   const [place1, setPlace1] = useState("Pimpri Chinchwad");
   const [place2, setPlace2] = useState("Pune");
   const [selected, setSelected] = useState("tabular");
@@ -64,11 +68,11 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-blue-50 font-sans">
-      
+
       {/* Sidebar */}
       <div className="w-3 bg-green-200 rounded-r-xl flex-shrink-0" />
 
-      {/* Main */}
+      {/* Main Content */}
       <div className="flex-1 p-6 flex flex-col gap-5">
 
         {/* Topbar */}
@@ -90,13 +94,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Grid */}
+        {/* Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
 
           {/* LEFT PANEL */}
           <div className="flex flex-col gap-4">
 
-            {/* Places */}
+            {/* Places Card */}
             <div className="bg-green-50 border border-green-200 rounded-2xl p-5">
               <h2 className="font-bold text-xl text-gray-800 mb-4">
                 Places
@@ -161,9 +165,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* MAP */}
+          {/* MAP SECTION */}
           <div className="bg-white border border-green-200 rounded-2xl overflow-hidden h-96 md:h-[430px] flex items-center justify-center">
-
             {mapUrl ? (
               <iframe
                 title="Google Map"
@@ -173,16 +176,16 @@ export default function Dashboard() {
                 className="w-full h-full border-0"
               />
             ) : (
-              <p className="text-gray-500 text-sm">
-                Google Maps API key missing. Add it in your .env file.
+              <p className="text-gray-500 text-sm text-center px-4">
+                Google Maps API key missing. Add it in your .env file and restart the server.
               </p>
             )}
-
           </div>
 
         </div>
       </div>
 
+      {/* Toast */}
       <Toast message={toast.message} show={toast.show} />
     </div>
   );
