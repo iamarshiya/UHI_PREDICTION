@@ -12,6 +12,8 @@ function Navbar() {
         <Link to="/riskmap">Risk Map</Link>
         <Link to="/forecast">Forecast</Link>
         <Link to="/mitigation">Mitigation</Link>
+        <Link to="/locality">Locality</Link>
+        <Link to="/chatbot">Chatbot</Link>
       </div>
     </nav>
   );
