@@ -7,6 +7,7 @@ import Riskmap from "./pages/Riskmap";
 import Forecast from "./pages/Forecast";
 import Locality from "./pages/Locality";
 import Mitigation from "./pages/Mitigation";
+import Chatbot from "./components/chatbot";
 
 import "./App.css";
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/forecast" element={<Forecast />} />
         <Route path="/locality" element={<Locality />} />
         <Route path="/mitigation" element={<Mitigation />} />
+        <Route path="/chatbot" element={<Chatbot />} />
       </Routes>
     </BrowserRouter>
   );
