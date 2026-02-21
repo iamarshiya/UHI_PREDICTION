@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Riskmap from "./pages/Riskmap";
 import Forecast from "./pages/Forecast";
-import Locality from "./pages/Locality";
+import Locality from "./pages/location";
 import Mitigation from "./pages/Mitigation";
 import about from "./pages/about";
 import Contact from "./pages/Contact";
