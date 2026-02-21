@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+/* ================= ICONS ================= */
 
 const BellIcon = () => (
   <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -20,18 +22,25 @@ const CheckIcon = () => (
   </svg>
 );
 
+/* ================= TOAST ================= */
+
 const Toast = ({ message, show }) => (
-  <div className={`fixed bottom-7 right-7 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
+  <div
+    className={`fixed bottom-7 right-7 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 ${
+      show
+        ? "opacity-100 translate-y-0"
+        : "opacity-0 translate-y-4 pointer-events-none"
+    }`}
+  >
     {message}
   </div>
 );
 
-// 🔑 Replace with your Google Maps Embed API key
-// Get one at: https://console.cloud.google.com/apis/credentials
-// Make sure "Maps Embed API" is enabled for your project
-const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+/* ================= MAIN COMPONENT ================= */
 
 export default function Dashboard() {
+  const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
   const [place1, setPlace1] = useState("Pimpri Chinchwad");
   const [place2, setPlace2] = useState("Pune");
   const [selected, setSelected] = useState("tabular");
@@ -47,9 +56,15 @@ export default function Dashboard() {
     showToast(`✓ ${label} report for ${place2 || "selected place"} generated!`);
   };
 
+  const mapUrl = GOOGLE_MAPS_API_KEY
+    ? `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(
+        place2 || "Pune"
+      )}&zoom=12`
+    : null;
+
   return (
     <div className="flex min-h-screen bg-blue-50 font-sans">
-
+      
       {/* Sidebar */}
       <div className="w-3 bg-green-200 rounded-r-xl flex-shrink-0" />
 
@@ -62,8 +77,11 @@ export default function Dashboard() {
             <BellIcon />
             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-blue-50" />
           </button>
+
           <div className="flex items-center gap-2 bg-white border border-green-200 rounded-full px-4 py-2 w-48 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100 transition-all">
-            <span className="text-gray-400"><SearchIcon /></span>
+            <span className="text-gray-400">
+              <SearchIcon />
+            </span>
             <input
               type="text"
               placeholder="Search"
@@ -72,37 +90,41 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Content Grid */}
+        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
 
-          {/* Left Panel */}
+          {/* LEFT PANEL */}
           <div className="flex flex-col gap-4">
 
-            {/* Places Card */}
+            {/* Places */}
             <div className="bg-green-50 border border-green-200 rounded-2xl p-5">
-              <h2 className="font-bold text-xl text-gray-800 mb-4" style={{ fontFamily: "'Syne', sans-serif" }}>Places</h2>
+              <h2 className="font-bold text-xl text-gray-800 mb-4">
+                Places
+              </h2>
+
               <div className="flex flex-col gap-3">
                 <input
                   type="text"
                   value={place1}
-                  onChange={e => setPlace1(e.target.value)}
+                  onChange={(e) => setPlace1(e.target.value)}
                   placeholder="Enter place 1"
                   className="bg-white border border-green-200 rounded-lg px-4 py-2.5 text-sm text-gray-800 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 transition-all w-full"
                 />
                 <input
                   type="text"
                   value={place2}
-                  onChange={e => setPlace2(e.target.value)}
+                  onChange={(e) => setPlace2(e.target.value)}
                   placeholder="Enter place 2"
                   className="bg-white border border-green-200 rounded-lg px-4 py-2.5 text-sm text-gray-800 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 transition-all w-full"
                 />
               </div>
             </div>
 
-            {/* Dashboard Card */}
+            {/* Dashboard Options */}
             <div className="bg-green-50 border border-green-200 rounded-2xl p-5">
-              <h2 className="font-bold text-xl text-gray-800 mb-3" style={{ fontFamily: "'Syne', sans-serif" }}>DashBoard</h2>
-              <p className="text-base font-semibold text-gray-700 mb-3">Select :</p>
+              <h2 className="font-bold text-xl text-gray-800 mb-3">
+                Dashboard
+              </h2>
 
               <div className="bg-white border border-green-200 rounded-lg overflow-hidden">
                 {[
@@ -112,16 +134,20 @@ export default function Dashboard() {
                   <div
                     key={opt.value}
                     onClick={() => setSelected(opt.value)}
-                    className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors text-sm
-                      ${selected === opt.value ? "bg-green-50 font-medium text-gray-800" : "text-gray-600 hover:bg-green-50"}
+                    className={`flex items-center justify-between px-4 py-3 cursor-pointer text-sm transition-colors
+                      ${
+                        selected === opt.value
+                          ? "bg-green-50 font-medium text-gray-800"
+                          : "text-gray-600 hover:bg-green-50"
+                      }
                       ${i < arr.length - 1 ? "border-b border-green-100" : ""}`}
-                    role="option"
-                    aria-selected={selected === opt.value}
                   >
                     {opt.label}
-                    <span className={`transition-opacity ${selected === opt.value ? "opacity-100 text-green-600" : "opacity-0"}`}>
-                      <CheckIcon />
-                    </span>
+                    {selected === opt.value && (
+                      <span className="text-green-600">
+                        <CheckIcon />
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -133,19 +159,25 @@ export default function Dashboard() {
                 Generate Report
               </button>
             </div>
-
           </div>
 
-          {/* Map */}
-          <div className="bg-white border border-green-200 rounded-2xl overflow-hidden h-96 md:h-[430px]">
-            <iframe
-              title="Pune Map"
-              src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(place2 || "Pune")}&zoom=12`}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-full border-0"
-            />
+          {/* MAP */}
+          <div className="bg-white border border-green-200 rounded-2xl overflow-hidden h-96 md:h-[430px] flex items-center justify-center">
+
+            {mapUrl ? (
+              <iframe
+                title="Google Map"
+                src={mapUrl}
+                allowFullScreen
+                loading="lazy"
+                className="w-full h-full border-0"
+              />
+            ) : (
+              <p className="text-gray-500 text-sm">
+                Google Maps API key missing. Add it in your .env file.
+              </p>
+            )}
+
           </div>
 
         </div>
