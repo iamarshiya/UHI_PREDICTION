@@ -1,0 +1,199 @@
+================ SMART HEAT RISK REPORT ================
+Fetching live satellite and weather data... (This takes about ~25 seconds)
+
+=========== AVAILABLE LOCALITIES ===========
+1. Agarkar Nagar
+2. Ahire
+3. Alandi Mhatobachi
+4. Ambadwet
+5. Ambegaon Budruk
+6. Anurag Society
+7. Ashtapur
+8. Askarwadi
+9. Aundh
+10. Bakori
+11. Balasaheb Thakare Nagar
+12. Baner Annex
+13. Bhim Nagar
+14. Bhose
+15. Biwri
+16. Block B6
+17. Bopgaon
+18. Chaitanya Nagar
+19. Chambli
+20. Chandan Tekadi
+21. Chande
+22. Charholi Budruk
+23. Chikhali
+24. Chokhi Dhani
+25. Chovisawadi
+26. Darumbre
+27. Dattawadi
+28. Defence Area
+29. Dehu Phata
+30. Dehu Road
+31. Devadi
+32. Dive
+33. Donaje
+34. Ganesh Nagar
+35. Ganesh Nagar Chikhali
+36. Ganesh Peth
+37. Garade
+38. Garden City
+39. Gaud Dara
+40. Gawdewadi
+41. Ghera Sinhagad
+42. Girinagar
+43. Godambewadi
+44. Gorhe Bk.
+45. Hadapsar
+46. Haveli
+47. Hinjawadi Phase II
+48. Jadhav Wadi
+49. Jadhavwadi
+50. Kalas Malwadi
+51. Kalewadi
+52. Kalwad
+53. Kasarsai
+54. Kate Patil Nagar
+55. Keshav Nagar
+56. Kesnand
+57. Khadakwadi
+58. Khadewadi
+59. Khese Park
+60. Kodit Bk.
+61. Kodit Kh.
+62. Kolwadi
+63. Kondhawe-Dhawade
+64. Kondhwa Budruk
+65. Koregaon Bhima
+66. Koyali Tarf Chakan
+67. Kunjirwadi
+68. Kurali
+69. Kusagaon
+70. Loni Kalbhor
+71. M I D C Technology Park
+72. MIDC
+73. Madhala Vada
+74. Mandvi Bk.
+75. Manekhadi
+76. Mangadewadi
+77. Mangalwar Peth
+78. Manjari Budruk
+79. Manjari Khurd
+80. Materewadi
+81. Moee
+82. Moi
+83. Morewadi
+84. Mukaiwadi
+85. Mukund Nagar
+86. Mulkhed
+87. Mundhwa
+88. Murkutenagar
+89. NIBM उंद्री रोड
+90. Naigaon
+91. Nanekarwadi
+92. Narayan Peth
+93. Nighoje
+94. Pawarwadi
+95. Perne
+96. Phase-3
+97. Phugewadi
+98. Phulgaon
+99. Phursungi
+100. Pimpalgaon
+101. Pimpri-Chinchwad
+102. Pune
+103. Rakshak Nagar
+104. Rakshak Society
+105. Ramoshiwadi
+106. Rase
+107. Sai Nagar
+108. Saibaba Nagar
+109. Sambhajinagar
+110. Sangamvadi
+111. Sant Eknath Nagar 2
+112. Sashte
+113. Saswad Rural
+114. Saykarwadi
+115. Sector No. 28
+116. Shindevadi
+117. Shiv Nagar
+118. Shivare
+119. Sortapwadi Phata
+120. Sus
+121. Taljai Forest Area
+122. Tarade
+123. Telco Quality Aid Center
+124. Thapewadi
+125. Tophakhana
+126. Urawade
+127. Varve Bk
+128. Wadakinala
+129. Wadegaon
+130. Wadgaon Budruk
+131. Wadgaon Shinde
+132. Wadgaonghenand
+133. Wadhu Bk.
+134. Wadki
+135. Wagholi
+136. Wangani
+137. Wardade
+138. Warje
+139. Warvadi
+140. Yerawada
+141. hiware
+142. शिवशंभो पार्क
+
+🏆 TOP 10 MOST LIVABLE LOCALITIES IN PUNE:
+  1. Chambli (Livability Index: 79.80)
+  2. Kodit Bk. (Livability Index: 78.70)
+  3. Dive (Livability Index: 78.40)
+  4. Saykarwadi (Livability Index: 78.40)
+  5. Shivare (Livability Index: 77.81)
+  6. Varve Bk (Livability Index: 77.60)
+  7. शिवशंभो पार्क (Livability Index: 77.20)
+  8. Naigaon (Livability Index: 77.20)
+  9. Manjari Khurd (Livability Index: 76.90)
+  10. Gaud Dara (Livability Index: 76.69)
+
+🚨 TOP 10 LEAST LIVABLE LOCALITIES IN PUNE:
+  1. Phase-3 (Livability Index: 64.27)
+  2. Ganesh Peth (Livability Index: 67.04)
+  3. Ganesh Nagar Chikhali (Livability Index: 67.04)
+  4. Sus (Livability Index: 69.25)
+  5. Kalwad (Livability Index: 69.25)
+  6. Sai Nagar (Livability Index: 69.45)
+  7. Rakshak Nagar (Livability Index: 69.65)
+  8. M I D C Technology Park (Livability Index: 69.85)
+  9. Narayan Peth (Livability Index: 69.85)
+  10. Keshav Nagar (Livability Index: 69.88)
+
+================ SMART CITY REPORT ================
+
+📍 Location Point: Sus (18.5543, 73.7642)
+🌡 Live Ambient Temp: 23.8 °C
+🏠 Livability Status: Moderately Livable
+🧠 AI Summary: Thermal comfort is acceptable but vegetation loss and urban density are beginning to affect living conditions.
+
+🔥 Heat Risk Score: 26.19 /100
+🌱 Green Deficit: 0.49
+❄  Cooling Potential: 1.96 °C
+👥 People at Risk (est): 3000
+⏳ Future Risk (3 months): 27.5
+
+🔍 Main Statistical Drivers mapping to Risk:
+   • NDVI
+   • Slope
+   • EVI
+
+🛠 AI Recommended Interventions for this Coordinate:
+
+   • Create pocket parks and green buffers
+   • Vertical gardening on buildings
+   • Increase roadside tree plantation
+
+🛡 Urban Resilience Score: 73.81
+
+===================================================
+
