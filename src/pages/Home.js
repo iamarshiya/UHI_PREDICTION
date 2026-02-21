@@ -1,94 +1,75 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const NibbleLogo = () => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-    <circle cx="20" cy="20" r="20" fill="#4ade80" opacity="0.15" />
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="20" cy="20" r="20" fill="#22c55e" />
     <path
-      d="M20 8C13.4 8 8 13.4 8 20s5.4 12 12 12 12-5.4 12-12S26.6 8 20 8zm-2 16.5c-2.5-1.2-4-3.7-4-6.5 0-1.5.4-2.9 1.2-4.1C16.4 15.7 18 17.7 18 20v4.5zm4 0V20c0-2.3 1.6-4.3 3.8-5.1.8 1.2 1.2 2.6 1.2 4.1 0 2.8-1.5 5.3-4 6.5z"
-      fill="#22c55e"
+      d="M20 8 C14 8 10 13 10 18 C10 22 12 25 16 27 C14 29 13 31 14 33 C16 31 18 30 20 30 C22 30 24 31 26 33 C27 31 26 29 24 27 C28 25 30 22 30 18 C30 13 26 8 20 8Z"
+      fill="white"
+      opacity="0.9"
     />
+    <ellipse cx="20" cy="18" rx="5" ry="6" fill="#22c55e" />
   </svg>
 );
 
 export default function NibbleLanding() {
-  const [scrolled, setScrolled] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => setLoaded(true), 100);
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [activeNav, setActiveNav] = useState("Home");
+  const navItems = ["Home", "About us", "Features", "Services", "Contact"];
 
   return (
-    <div className="min-h-screen font-sans bg-white overflow-x-hidden">
-      
+    <div className="min-h-screen font-sans bg-white">
+      {/* Top yellow accent border */}
+      <div className="h-1 w-full bg-yellow-400" />
+
       {/* Navbar */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? "shadow-md bg-white/95 backdrop-blur-sm" : "bg-white"
-        }`}
-        style={{ borderBottom: "1px solid #f0f0f0" }}
-      >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <NibbleLogo />
-            <span className="text-xl font-bold">Nibble</span>
-          </div>
+      <nav className="flex items-center justify-between px-10 py-4 bg-white border-b border-gray-100">
+        <div className="flex items-center gap-2">
+          <NibbleLogo />
+          <span className="text-2xl font-bold text-gray-900 tracking-tight">Nibble</span>
+        </div>
 
-          <div className="hidden md:flex items-center gap-8">
-            {["Home", "About us", "Features", "Services", "Contact"].map(
-              (item) => (
-                <a key={item} href="#" className="nav-link">
-                  {item}
-                </a>
-              )
-            )}
-          </div>
+        <ul className="flex items-center gap-8">
+          {navItems.map((item) => (
+            <li key={item}>
+              <button
+                onClick={() => setActiveNav(item)}
+                className={`text-sm font-medium transition-colors pb-0.5 ${
+                  activeNav === item
+                    ? "text-gray-900 font-bold border-b-2 border-gray-900"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                {item}
+              </button>
+            </li>
+          ))}
+        </ul>
 
-          <div className="flex items-center gap-3">
-            <button className="btn-outline">Login</button>
-            <button className="btn-green">Get in touch</button>
-          </div>
+        <div className="flex items-center gap-3">
+          <button className="px-5 py-2 text-sm font-semibold text-gray-900 border-2 border-gray-800 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-200">
+            Login
+          </button>
+          <button className="px-5 py-2 text-sm font-semibold text-gray-900 bg-lime-400 rounded-full hover:bg-lime-500 transition-all duration-200">
+            Get in touch
+          </button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section
-        className="relative w-full"
-        style={{ height: "100vh", minHeight: 560, paddingTop: 64 }}
-      >
-        {/* Background Image */}
-        <div
-          className="absolute inset-0"
-          style={{
-            top: 64,
-            backgroundImage: "url('public\climate image nibble.jpg.jpeg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          {/* Dark Overlay */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(to right, rgba(0,0,0,0.65), rgba(0,0,0,0.3))",
-            }}
-          />
-        </div>
+      <div className="relative w-full overflow-hidden" style={{ height: "calc(100vh - 73px)" }}>
 
-        {/* Hero Content */}
-        <div className="relative z-10 flex flex-col justify-center h-full px-16">
-          <h1
-            className={`text-white text-5xl font-bold transition-all duration-700 ${
-              loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
-          >
-            AI-Powered <span className="bg-white text-black px-2">
+        {/* Background Image */}
+        <img
+          src="/climate image nibble.jpg.jpeg"
+          alt="Climate environmental background"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+
+        {/* Hero Text */}
+        <div className="absolute left-10 top-1/2 -translate-y-1/2 z-10 max-w-lg">
+          <h1 className="text-5xl font-extrabold text-white leading-snug drop-shadow-2xl">
+            AI-Powered{" "}
+            <span className="bg-white text-gray-900 px-2 py-0.5 leading-relaxed inline">
               Environmental
             </span>
             <br />
@@ -96,34 +77,8 @@ export default function NibbleLanding() {
             <br />
             for Smarter Cities
           </h1>
-
-          <p
-            className={`text-white/80 mt-6 max-w-md transition-all duration-700 delay-200 ${
-              loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
-          >
-            Harnessing satellite data and machine learning to predict
-            environmental risks before they happen.
-          </p>
-
-          <div
-            className={`mt-8 flex gap-4 transition-all duration-700 delay-300 ${
-              loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
-          >
-            <button className="bg-lime-500 hover:bg-lime-600 px-6 py-3 rounded-full font-bold">
-              Get Started
-            </button>
-
-            <button className="border border-white px-6 py-3 rounded-full text-white">
-              Learn More
-            </button>
-          </div>
         </div>
-
-        {/* Bottom Accent Line */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-yellow-400" />
-      </section>
+      </div>
     </div>
   );
 }
