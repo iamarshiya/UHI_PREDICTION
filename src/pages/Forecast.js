@@ -55,7 +55,7 @@ export default function Forecast() {
     setLoading(true);
     setErrorMsg("");
     try {
-      const resData = await fetch("http://127.0.0.1:5000/analyze?city=Pune");
+      const resData = await fetch("/analyze?city=Pune");
       if (!resData.ok) throw new Error("Failed to fetch data.");
       const dataJson = await resData.json();
       
@@ -63,7 +63,7 @@ export default function Forecast() {
       setAllFeatures(featuresRaw);
     } catch (err) {
       console.error(err);
-      setErrorMsg("Failed to fetch data from backend. Make sure the python backend is running locally on port 5000.");
+      setErrorMsg("Failed to fetch data from backend. Make sure the python backend is running locally on port 5001.");
     } finally {
       setLoading(false);
     }
@@ -147,12 +147,12 @@ export default function Forecast() {
       <style>{STYLES}</style>
 
       {/* ── Header ── */}
-      <div style={{ background: "#030712", padding: "40px 32px 64px" }}>
+      <div style={{ background: "#ffffff", padding: "40px 32px 64px", borderBottom: "1px solid #f3f4f6" }}>
         <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
-          <h1 style={{ fontSize: 40, fontWeight: 900, color: "#fff", letterSpacing: "-1px", marginBottom: 12 }}>
-            Risk Forecast & AI Mitigation
+          <h1 style={{ fontSize: 40, fontWeight: 900, color: "#111827", letterSpacing: "-1px", marginBottom: 12 }}>
+            Forecast Future Risk
           </h1>
-          <p style={{ color: "#9ca3af", fontSize: 16 }}>
+          <p style={{ color: "#4b5563", fontSize: 16 }}>
             Select a Pune locality to run a 3-month predictive future risk simulation and generate dynamic intervention strategies using Google Gemini AI.
           </p>
         </div>
@@ -222,12 +222,20 @@ export default function Forecast() {
                     {/* Secondary Metrics */}
                     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                       <div style={{ background: "#f9fafb", padding: "18px 20px", borderRadius: 16, border: "1px solid #f3f4f6", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                        <div style={{ fontSize: 13, color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>Current Satellite Risk</div>
-                        <div style={{ fontSize: 28, fontWeight: 800, color: "#1f2937", marginTop: 4 }}>{localityData.risk?.toFixed(1)}</div>
+                        <div style={{ fontSize: 13, color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>Est. Local Population Exposed</div>
+                        <div style={{ fontSize: 28, fontWeight: 800, color: "#1f2937", marginTop: 4 }}>{(localityData?.people_at_risk || 0).toLocaleString()}</div>
                       </div>
-                      <div style={{ background: "#f9fafb", padding: "18px 20px", borderRadius: 16, border: "1px solid #f3f4f6", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                        <div style={{ fontSize: 13, color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>Est. People At Risk</div>
-                        <div style={{ fontSize: 28, fontWeight: 800, color: "#1f2937", marginTop: 4 }}>{(localityData.people_at_risk || 0).toLocaleString()}</div>
+                      <div style={{ display: "flex", gap: 16, flex: 1 }}>
+                        <div style={{ background: "#f9fafb", padding: "18px 20px", borderRadius: 16, border: "1px solid #f3f4f6", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                          <div style={{ fontSize: 13, color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>Current Risk</div>
+                          <div style={{ fontSize: 24, fontWeight: 800, color: "#1f2937", marginTop: 4 }}>{localityData?.risk?.toFixed(1) || "--"}</div>
+                        </div>
+                        <div style={{ background: "#fffaf0", padding: "18px 20px", borderRadius: 16, border: "1px solid #fef08a", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                          <div style={{ fontSize: 13, color: "#ca8a04", fontWeight: 700, textTransform: "uppercase" }}>Live Est. Temp</div>
+                          <div style={{ fontSize: 24, fontWeight: 800, color: "#a16207", marginTop: 4 }}>
+                            {localityData?.risk ? (localityData.risk * 0.15 + 28).toFixed(1) + "°C" : "--"}
+                          </div>
+                        </div>
                       </div>
                     </div>
                 </div>

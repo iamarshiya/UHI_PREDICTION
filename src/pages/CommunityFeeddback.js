@@ -130,13 +130,13 @@ export default function FeedbackForm() {
       
 
       {/* Hero banner */}
-      <div style={{ background: "linear-gradient(135deg, #022c22 0%, #14532d 50%, #166534 100%)", padding: "48px 40px", textAlign: "center" }}>
+      <div style={{ background: "#ffffff", padding: "48px 40px", textAlign: "center", borderBottom: "1px solid #f3f4f6" }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
           <div style={{ fontSize: 36, marginBottom: 12 }}>🏙️</div>
-          <h1 style={{ fontSize: 32, fontWeight: 900, color: "#fff", letterSpacing: "-1px", marginBottom: 10, lineHeight: 1.15 }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, color: "#111827", letterSpacing: "-1px", marginBottom: 10, lineHeight: 1.15 }}>
             Report a Climate Issue
           </h1>
-          <p style={{ color: "#86efac", fontSize: 15, lineHeight: 1.65 }}>
+          <p style={{ color: "#4b5563", fontSize: 15, lineHeight: 1.65 }}>
             Your report helps city planners, climate teams, and local governments take real action. Every submission matters.
           </p>
         </div>

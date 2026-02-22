@@ -4,9 +4,9 @@ import { Link, useLocation } from "react-router-dom";
 const NAV_LINKS = [
   { name: "Home", path: "/" },
   { name: "Dashboard", path: "/dashboard" },
-  { name: "Risk Report", path: "/riskmap" },
+  { name: "Heat Risk Map", path: "/riskmap" },
   { name: "Forecast Future", path: "/forecast" },
-  { name: "Climate Assistant", path: "/chatbot" }
+  { name: "Climate Assistant", path: "/climate-assistant" }
 ];
 
 export default function Navbar() {
@@ -21,17 +21,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ── Top utility bar ── */}
-      <div style={{ background: "#030712", color: "#9ca3af", fontSize: 12, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 32px" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80", display: "inline-block", animation: "pulse 2s infinite" }} />
-          Live Risk Monitoring Active
-        </span>
-        <div style={{ display: "flex", gap: 24 }}>
-          <Link to="#" style={{ color: "#9ca3af", textDecoration: "none" }}>Research</Link>
-          <Link to="/dashboard" style={{ color: "#9ca3af", textDecoration: "none" }}>City Dashboard</Link>
-        </div>
-      </div>
+    
 
       {/* ── Main nav ── */}
       <nav style={{

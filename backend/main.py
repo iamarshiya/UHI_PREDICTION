@@ -1,4 +1,5 @@
-from flask import Flask,request,jsonify
+import os
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import joblib
 
@@ -8,12 +9,17 @@ from livability import compute
 from analytics import enrich_dataframe
 from map_generator import generate_current_heatmap, generate_future_heatmap
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../build", static_url_path="/")
 CORS(app)
 
-@app.route("/")
-def home():
-    return "Urban Heat Island AI Backend Running"
+# Serve React App
+@app.route("/", defaults={'path': ''})
+@app.route("/<path:path>")
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 def df_to_geojson(df, category):
     features = []
@@ -89,4 +95,5 @@ def generate_maps():
     })
 
 if __name__=="__main__":
-    app.run(debug=False)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="127.0.0.1", port=port, debug=False)

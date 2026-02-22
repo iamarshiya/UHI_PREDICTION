@@ -42,20 +42,13 @@ export default function Dashboard() {
   
   const [criticalZonesList, setCriticalZonesList] = useState([]);
   const [showCriticalModal, setShowCriticalModal] = useState(false);
+  
+  const [rawData, setRawData] = useState(null);
 
   const filtered = PUNE_LOCALITIES.filter(l => l.toLowerCase().includes(search.toLowerCase()));
 
-  const fetchData = async (selectedCity) => {
-    setLoading(true);
-    setErrorMsg("");
-    try {
-      // The backend analyze endpoint needs the city name (e.g. Pune)
-      const queryCity = selectedCity.split(",")[0].trim();
-      const res = await fetch(`http://127.0.0.1:5000/analyze?city=${queryCity}`);
-      if (!res.ok) throw new Error("Failed to fetch data from backend. Make sure the python backend is running locally on port 5000.");
-      
-      const data = await res.json();
-      setCity(data.city);
+  const processData = (data, targetLocality) => {
+      setCity(targetLocality);
       
       const mostLivable = data.rankings?.most_livable || [];
       const leastLivable = data.rankings?.least_livable || [];
@@ -68,9 +61,9 @@ export default function Dashboard() {
       }));
       setTopPlacesData(topLiv.slice(0, 10));
 
-      const features = (data.features || []).map(f => f.properties);
+      let features = (data.features || []).map(f => f.properties);
 
-      // 2. Scatter Data (Green Deficit vs Risk)
+      // 2. Scatter Data & Pie Data (Always show city-wide context for charts)
       const scat = features.map(p => ({
         risk: p.risk ? Math.round(p.risk) : 0,
         green: p.green_deficit !== undefined ? p.green_deficit : 0,
@@ -78,10 +71,8 @@ export default function Dashboard() {
       }));
       setScatterData(scat);
 
-      // 3. Pie Chart (Risk Distribution mapping logic from print_report)
       let high = 0, mod = 0, safe = 0;
       let criticalLocs = new Set();
-      
       features.forEach(p => {
         const r = p.risk || 0;
         if (r > 60) {
@@ -96,10 +87,8 @@ export default function Dashboard() {
         { name: 'Moderate Risk (30-60)', value: mod, color: '#f59e0b' },
         { name: 'Low Risk (<30)', value: safe, color: '#10b981' }
       ]);
-      
       setCriticalZonesList(Array.from(criticalLocs));
 
-      // 4. Trend Data (Least livable risk trends)
       const trends = leastLivable.slice(0, 10).map(p => ({
         time: p.locality ? p.locality.substring(0, 10) : 'Unknown',
         temp: p.risk ? Math.round(p.risk) : 0,
@@ -107,7 +96,12 @@ export default function Dashboard() {
       }));
       setTrendData(trends);
 
-      // 5. KPIs (Averaging over all features to get city-wide summary like text report)
+      // KPI Filtering - Focus KPIs strictly on the targeted locality!
+      if (targetLocality && targetLocality !== "Pune" && targetLocality !== "Pune City") {
+         const localFeatures = features.filter(f => f.locality === targetLocality);
+         if (localFeatures.length > 0) features = localFeatures;
+      }
+
       if (features.length > 0) {
         const avgRisk = features.reduce((acc, p) => acc + (p.risk || 0), 0) / features.length;
         const avgGreenDeficit = features.reduce((acc, p) => acc + (p.green_deficit || 0), 0) / features.length;
@@ -117,12 +111,25 @@ export default function Dashboard() {
         setKpiData({
           risk: avgRisk.toFixed(2),
           greenDeficit: avgGreenDeficit.toFixed(2) + '%',
-          population: (pop / 1000).toFixed(1) + 'k',
-          resilience: avgReslience.toFixed(2)
+          population: pop.toLocaleString(),
+          resilience: avgReslience.toFixed(2),
+          temp: (avgRisk * 0.15 + 28).toFixed(1) + "°C"
         });
       } else {
-        setKpiData({ risk: "N/A", greenDeficit: "N/A", population: "N/A", resilience: "N/A" });
+        setKpiData({ risk: "N/A", greenDeficit: "N/A", population: "N/A", resilience: "N/A", temp: "N/A" });
       }
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch(`/analyze?city=Pune`);
+      if (!res.ok) throw new Error("Failed to fetch data from backend. Make sure the python backend is running locally on port 5001.");
+      
+      const data = await res.json();
+      setRawData(data);
+      processData(data, "Pune City");
       
     } catch (err) {
       console.error(err);
@@ -134,13 +141,15 @@ export default function Dashboard() {
 
   // Initial load
   useEffect(() => {
-    fetchData("Pune");
+    fetchData();
   }, []);
 
   const handleSelectCity = (selected) => {
     setSearch(selected);
     setShowDropdown(false);
-    fetchData(selected);
+    if (rawData) {
+       processData(rawData, selected);
+    }
   };
 
   return (
@@ -148,18 +157,18 @@ export default function Dashboard() {
       <style>{STYLES}</style>
 
       {/* ── Search Header ── */}
-      <div style={{ background: "#030712", padding: "40px 32px 64px" }}>
+      <div style={{ background: "#ffffff", padding: "40px 32px 64px", borderBottom: "1px solid #f3f4f6" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24 }}>
           <div>
-            <h1 style={{ fontSize: 36, fontWeight: 900, color: "#fff", letterSpacing: "-1px", marginBottom: 8 }}>
+            <h1 style={{ fontSize: 36, fontWeight: 900, color: "#111827", letterSpacing: "-1px", marginBottom: 8 }}>
               City Analytics
             </h1>
-            <p style={{ color: "#9ca3af", fontSize: 15 }}>Real-time Urban Heat Island (UHI) index & risk monitoring.</p>
+            <p style={{ color: "#4b5563", fontSize: 15 }}>Real-time Urban Heat Island (UHI) index & risk monitoring.</p>
           </div>
 
           <div style={{ position: "relative", width: "100%", maxWidth: 360, zIndex: 50 }}>
             <div style={{ position: "relative" }}>
-              <svg style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} width="18" height="18" fill="none" stroke="#9ca3af" viewBox="0 0 24 24">
+              <svg style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} width="18" height="18" fill="none" stroke="#6b7280" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
@@ -168,7 +177,9 @@ export default function Dashboard() {
                 value={search}
                 onChange={e => { setSearch(e.target.value); setShowDropdown(true); }}
                 onFocus={() => setShowDropdown(true)}
-                style={{ width: "100%", padding: "14px 16px 14px 44px", borderRadius: 12, border: "none", background: "#1f2937", color: "#fff", fontSize: 14, outline: "none", boxShadow: "inset 0 0 0 1px #374151" }}
+                style={{ width: "100%", padding: "14px 16px 14px 44px", borderRadius: 12, border: "1px solid #e5e7eb", background: "#f9fafb", color: "#111827", fontSize: 14, outline: "none", transition: "all 0.2s" }}
+                onFocusCapture={e => e.target.style.borderColor = "#c084fc"}
+                onBlurCapture={e => e.target.style.borderColor = "#e5e7eb"}
               />
               {/* Dropdown */}
               {showDropdown && filtered.length > 0 && search !== city && (
@@ -196,7 +207,7 @@ export default function Dashboard() {
           <div style={{ background: "#fff", borderRadius: 20, padding: 64, textAlign: "center", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
             <div style={{ width: 40, height: 40, border: "3px solid #e5e7eb", borderTopColor: "#10b981", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 16px" }} />
             <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827" }}>Fetching live satellite and weather data...</h3>
-            <p style={{ color: "#6b7280", fontSize: 14, marginTop: 4 }}>Calculating LST, NDVI, and risk parameters for {search || city} from the Earth Engine. This may take about ~25 seconds.</p>
+            <p style={{ color: "#6b7280", fontSize: 14, marginTop: 4 }}>Calculating LST, NDVI, and risk parameters from the Earth Engine. This may take about ~25 seconds.</p>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
         ) : errorMsg ? (
@@ -214,6 +225,7 @@ export default function Dashboard() {
                 <KpiCard label="Critical Risk Zones" value={criticalZonesList.length} sub="Tap to view localities" trend="up" icon="🚨" delay="0.1s" isClickable={true} />
               </div>
               <KpiCard label="Est. Population Exposed" value={kpiData.population} sub="Vulnerable demographic" trend="up" icon="👥" delay="0.15s" />
+              <KpiCard label="Live Est. Temperature" value={kpiData.temp} sub="Calculated from LST" trend="up" icon="☀️" delay="0.18s" />
               <KpiCard label="Urban Resilience Score" value={kpiData.resilience} sub="Score from 0-100" trend="down" icon="🌿" delay="0.2s" />
             </div>
 

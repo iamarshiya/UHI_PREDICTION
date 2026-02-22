@@ -28,14 +28,14 @@ export default function Riskmap() {
     setErrorMsg("");
     try {
       // 1. Fetch Heatmaps
-      const resMaps = await fetch("http://127.0.0.1:5000/generate-maps?city=Pune");
+      const resMaps = await fetch("/generate-maps?city=Pune");
       if (!resMaps.ok) throw new Error("Failed to fetch maps.");
       const dataMaps = await resMaps.json();
       setCurrentMapHtml(dataMaps.current_map);
       setFutureMapHtml(dataMaps.future_map);
     } catch (err) {
       console.error(err);
-      setErrorMsg("Failed to fetch maps from backend. Make sure the python backend is running locally on port 5000.");
+      setErrorMsg("Failed to fetch maps from backend. Make sure the python backend is running locally on port 5001.");
     } finally {
       setLoading(false);
     }
@@ -46,23 +46,23 @@ export default function Riskmap() {
       <style>{STYLES}</style>
 
       {/* ── Header ── */}
-      <div style={{ background: "#030712", padding: "40px 32px 64px" }}>
+      <div style={{ background: "#ffffff", padding: "40px 32px 64px", borderBottom: "1px solid #f3f4f6" }}>
         <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24 }}>
           <div>
-            <h1 style={{ fontSize: 36, fontWeight: 900, color: "#fff", letterSpacing: "-1px", marginBottom: 8 }}>
+            <h1 style={{ fontSize: 36, fontWeight: 900, color: "#111827", letterSpacing: "-1px", marginBottom: 8 }}>
               Urban Heat Risk Map
             </h1>
-            <p style={{ color: "#9ca3af", fontSize: 15 }}>Real-time satellite thermal imaging & predictive AI projections.</p>
+            <p style={{ color: "#4b5563", fontSize: 15 }}>Real-time satellite thermal imaging & predictive AI projections.</p>
           </div>
 
           {!loading && !errorMsg && (
-            <div style={{ display: "flex", background: "#1f2937", padding: 6, borderRadius: 12 }}>
+            <div style={{ display: "flex", background: "#f3f4f6", padding: 6, borderRadius: 12, border: "1px solid #e5e7eb" }}>
               <button 
                 onClick={() => setActiveTab("current")}
                 style={{
                   padding: "10px 20px", fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", borderRadius: 8, transition: "0.2s",
                   background: activeTab === "current" ? "#ef4444" : "transparent",
-                  color: activeTab === "current" ? "#fff" : "#9ca3af"
+                  color: activeTab === "current" ? "#fff" : "#6b7280"
                 }}
               >
                 🔥 Live Heatmap
@@ -72,7 +72,7 @@ export default function Riskmap() {
                 style={{
                   padding: "10px 20px", fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", borderRadius: 8, transition: "0.2s",
                   background: activeTab === "future" ? "#f59e0b" : "transparent",
-                  color: activeTab === "future" ? "#fff" : "#9ca3af"
+                  color: activeTab === "future" ? "#fff" : "#6b7280"
                 }}
               >
                 ⏳ 3-Month Projection

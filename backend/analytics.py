@@ -11,8 +11,13 @@ def green_deficit(ndvi):
 def cooling_potential(deficit):
     return round(deficit * 4, 2)
 
-def people_at_risk(pop=10000):
-    return int(pop * 0.3)
+def people_at_risk(ndbi):
+    # NDBI ranges from -1 to 1. Higher value = highly built up/dense.
+    # We map NDBI to a base population density between 2,000 and 45,000 per grid point
+    # Scale: NDBI + 1 is 0 to 2.
+    base_pop = 2000 + ((ndbi + 1) / 2) * 43000
+    # People at severe heat risk (approx 35% vulnerable demograhic)
+    return int(base_pop * 0.35)
 
 def future_risk(risk_score):
     return round(risk_score * 1.05, 2)
@@ -90,7 +95,10 @@ def enrich_dataframe(df, model, features):
 
     df["green_deficit"] = df["NDVI"].apply(green_deficit)
     df["cooling_potential"] = df["green_deficit"].apply(cooling_potential)
-    df["people_at_risk"] = df.apply(lambda row: people_at_risk(), axis=1) 
+    
+    # Calculate population dynamically using NDBI (Normalized Difference Built-up Index)
+    df["people_at_risk"] = df.apply(lambda row: people_at_risk(row["NDBI"]), axis=1) 
+    
     df["future_risk_3months"] = df["risk"].apply(future_risk)
     df["early_warning"] = df["future_risk_3months"].apply(early_warning)
     df["resilience_score"] = df["risk"].apply(resilience)
