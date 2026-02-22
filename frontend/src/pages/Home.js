@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useNavigate } from "react-router-dom"; // Added useNavigate
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { useNavigate } from "react-router-dom"; // Added useNavigate
 
 /* ══════════════════════════════════════════
    ANIMATED EARTH VISUAL
@@ -130,9 +128,6 @@ function EarthVisual() {
 function Hero({ onOpenChat }) {
   const navigate = useNavigate();
 
-function Hero({ onOpenChat }) {
-  const navigate = useNavigate();
-
   return (
     <section style={{ background: "linear-gradient(135deg, #fff 0%, #f0fdf4 50%, #fff 100%)", padding: "80px 0", overflow: "hidden" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
@@ -169,9 +164,6 @@ function Hero({ onOpenChat }) {
             <button 
               onClick={() => navigate('/dashboard')}
               style={{
-            <button 
-              onClick={() => navigate('/dashboard')}
-              style={{
               background: "#111827", color: "#fff", fontWeight: 700, fontSize: 15,
               padding: "14px 28px", borderRadius: 16, border: "none", cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
@@ -190,9 +182,6 @@ function Hero({ onOpenChat }) {
               <button 
                 onClick={onOpenChat}
                 style={{
-              <button 
-                onClick={onOpenChat}
-                style={{
                 background: "transparent", color: "#15803d", fontWeight: 600, fontSize: 13,
                 padding: "12px 16px", borderRadius: 16, border: "2px solid #22c55e", cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
@@ -203,9 +192,6 @@ function Hero({ onOpenChat }) {
                 </svg>
                 Climate AI
               </button>
-              <button 
-                onClick={() => navigate('/climate-assistant')}
-                style={{
               <button 
                 onClick={() => navigate('/climate-assistant')}
                 style={{
@@ -257,37 +243,11 @@ const PREDEFINED_QUESTIONS = [
 ];
 
 function ChatBot({ open, setOpen }) {
-const PREDEFINED_QUESTIONS = [
-  "What is the current risk level of my locality?",
-  "Which are the top 10 most livable localities?",
-  "Which are the top 10 high-risk localities?",
-  "What factors are increasing heat stress in my area?",
-  "What mitigation strategies can reduce risk right now?",
-];
-
-function ChatBot({ open, setOpen }) {
   const [messages, setMessages] = useState([
-    { from: "bot", text: "Hi! I'm CityCare AI 🌿 Ask me anything about climate risks in Pune." }
     { from: "bot", text: "Hi! I'm CityCare AI 🌿 Ask me anything about climate risks in Pune." }
   ]);
   const [input, setInput] = useState("");
   const bottomRef = useRef(null);
-
-  const [cityData, setCityData] = useState(null);
-
-  useEffect(() => {
-    // Background fetch the contextual data for Pune
-    const fetchCityData = async () => {
-      try {
-         const res = await fetch("/analyze?city=Pune");
-         const data = await res.json();
-         setCityData(data);
-      } catch (err) {
-         console.error("Failed to fetch context", err);
-      }
-    };
-    fetchCityData();
-  }, []);
 
   const [cityData, setCityData] = useState(null);
 
@@ -311,12 +271,7 @@ function ChatBot({ open, setOpen }) {
 
   const send = async (textOverride) => {
     const t = textOverride || input.trim();
-  const send = async (textOverride) => {
-    const t = textOverride || input.trim();
     if (!t) return;
-    
-    // Add user message
-    setMessages(p => [...p, { from: "user", text: t }]);
     
     // Add user message
     setMessages(p => [...p, { from: "user", text: t }]);
@@ -326,7 +281,7 @@ function ChatBot({ open, setOpen }) {
     setMessages(p => [...p, { from: "bot", text: "Analyzing real-time satellite & sensor data...", isLoading: true }]);
 
     try {
-      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyDAyprx3TL0-M9m6oAXS5Ek-sHj6RbwHmk";
+      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyBLVR6W9dAHvalHVquw8HvAsV-1LghDU6w";
       
       let contextStr = "No live backend data available. Assume general Pune knowledge."; 
       if (cityData) {
@@ -426,23 +381,6 @@ function ChatBot({ open, setOpen }) {
               </div>
             )}
 
-          <div style={{ maxHeight: 320, overflowY: "auto", padding: "16px", background: "#f9fafb", display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
-            
-            {/* Quick Questions bubbles */}
-            {messages.length === 1 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-                {PREDEFINED_QUESTIONS.map((q, idx) => (
-                  <button 
-                    key={idx} 
-                    onClick={() => send(q)}
-                    style={{ background: "#e0f2fe", border: "1.5px solid #bae6fd", color: "#0369a1", fontSize: 11, padding: "6px 10px", borderRadius: 12, cursor: "pointer", textAlign: "left", lineHeight: 1.3 }}
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            )}
-
             {messages.map((m, i) => (
               <div key={i} style={{ display: "flex", justifyContent: m.from === "user" ? "flex-end" : "flex-start" }}>
                 <div style={{
@@ -452,12 +390,6 @@ function ChatBot({ open, setOpen }) {
                   color: m.from === "user" ? "#fff" : "#374151",
                   boxShadow: m.from === "bot" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
                   lineHeight: 1.5
-                }}>{m.isLoading ? (
-                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ width: 12, height: 12, border: "2px solid #cbd5e1", borderTopColor: "#64748b", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-                    {m.text}
-                  </span>
-                ) : m.text}</div>
                 }}>{m.isLoading ? (
                   <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <div style={{ width: 12, height: 12, border: "2px solid #cbd5e1", borderTopColor: "#64748b", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
@@ -522,7 +454,6 @@ function ChatBot({ open, setOpen }) {
 /* ══════════════════════════════════════════
    FOOTER
 ══════════════════════════════════════════ */
-function GlobalFooter() {
 function GlobalFooter() {
   const cols = [
     {
@@ -660,17 +591,12 @@ function GlobalFooter() {
 
 /* ══════════════════════════════════════════
    MAIN PAGE
-   MAIN PAGE
 ══════════════════════════════════════════ */
 export default function App() {
   // Lift the chat state here so the Hero "Climate AI" button can trigger it
   const [chatOpen, setChatOpen] = useState(false);
 
-  // Lift the chat state here so the Hero "Climate AI" button can trigger it
-  const [chatOpen, setChatOpen] = useState(false);
-
   return (
-    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", minHeight: "100vh", background: "#f0fdf4" }}>
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", minHeight: "100vh", background: "#f0fdf4" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
@@ -687,9 +613,6 @@ export default function App() {
         a { text-decoration: none; }
         button { font-family: inherit; }
       `}</style>
-      <Hero onOpenChat={() => setChatOpen(true)} />
-      <GlobalFooter />
-      <ChatBot open={chatOpen} setOpen={setChatOpen} />
       <Hero onOpenChat={() => setChatOpen(true)} />
       <GlobalFooter />
       <ChatBot open={chatOpen} setOpen={setChatOpen} />
