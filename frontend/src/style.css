@@ -1,0 +1,60 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: #0b3c5d;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar button {
+    margin-left: 8px;
+    padding: 8px 12px;
+    border: none;
+    background-color: #2ecc71;
+    color: black;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.navbar button:hover {
+    background-color: #27ae60;
+}
+
+/* PAGE CONTENT */
+.page {
+    padding: 30px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* BOX (MAP PLACEHOLDER) */
+.box {
+    height: 300px;
+    background-color: #e63946;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    border-radius: 8px;
+}
+
+/* CARDS */
+.card {
+    background-color: white;
+    padding: 15px;
+    margin-top: 15px;
+    width: 300px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}

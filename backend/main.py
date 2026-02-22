@@ -1,16 +1,25 @@
-from flask import Flask,request,jsonify
+import os
+from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
 import joblib
 
 from gee_engine import extract
 from locality import add_locality
 from livability import compute
 from analytics import enrich_dataframe
+from map_generator import generate_current_heatmap, generate_future_heatmap
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../build", static_url_path="/")
+CORS(app)
 
-@app.route("/")
-def home():
-    return "Urban Heat Island AI Backend Running"
+# Serve React App
+@app.route("/", defaults={'path': ''})
+@app.route("/<path:path>")
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 def df_to_geojson(df, category):
     features = []
@@ -35,21 +44,12 @@ FEATURES = [
 ]
 
 @app.route("/analyze")
-
 def analyze():
-
     city = request.args.get("city")
-
     df = extract(city)
-
-    print("COLUMNS:", df.columns)
-
     df["prediction"] = model.predict(df[FEATURES])
-
     df = compute(df)
-
     df = enrich_dataframe(df, model, FEATURES)
-
     df = add_locality(df)
     
     if "locality" in df.columns:
@@ -78,5 +78,24 @@ def analyze():
         "features": features
     })
 
-if __name__=="__main__":
-    app.run(debug=False)
+@app.route("/generate-maps")
+def generate_maps():
+    city = request.args.get("city", "Pune")
+    df = extract(city)
+    df["prediction"] = model.predict(df[FEATURES])
+    df = compute(df)
+    df = enrich_dataframe(df, model, FEATURES)
+    
+    current_map_html = generate_current_heatmap(df, city)
+    future_map_html = generate_future_heatmap(df, city)
+    
+    return jsonify({
+        "current_map": current_map_html,
+        "future_map": future_map_html
+    })
+
+if __name__ == "__main__":
+   
+    port = int(os.environ.get("PORT", 10000))
+   
+    app.run(host="0.0.0.0", port=port, debug=False)
