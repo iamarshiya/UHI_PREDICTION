@@ -1,10 +1,7 @@
-import os
-from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
-import os
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask,request,jsonify
 from flask_cors import CORS
 import joblib
+import os
 
 from gee_engine import extract
 from locality import add_locality
@@ -12,30 +9,12 @@ from livability import compute
 from analytics import enrich_dataframe
 from map_generator import generate_current_heatmap, generate_future_heatmap
 
-app = Flask(__name__, static_folder="../build", static_url_path="/")
+app = Flask(__name__)
 CORS(app)
 
-# Serve React App
-@app.route("/", defaults={'path': ''})
-@app.route("/<path:path>")
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
-from map_generator import generate_current_heatmap, generate_future_heatmap
-
-app = Flask(__name__, static_folder="../build", static_url_path="/")
-CORS(app)
-
-# Serve React App
-@app.route("/", defaults={'path': ''})
-@app.route("/<path:path>")
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
+@app.route("/")
+def home():
+    return "Urban Heat Island AI Backend Running"
 
 def df_to_geojson(df, category):
     features = []
@@ -110,8 +89,6 @@ def generate_maps():
         "future_map": future_map_html
     })
 
-if __name__ == "__main__":
-   
-    port = int(os.environ.get("PORT", 10000))
-   
-    app.run(host="0.0.0.0", port=port, debug=False)
+if __name__=="__main__":
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="127.0.0.1", port=port, debug=False)
