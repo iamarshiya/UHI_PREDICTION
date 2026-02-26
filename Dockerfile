@@ -2,14 +2,14 @@
 FROM node:18-alpine AS build
 WORKDIR /app
 
-# 1. Copy package files from the ROOT (where your image shows them)
+# 1. Copy the package files from your ROOT directory
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
-# 2. Copy the frontend folder (where your index.html lives)
+# 2. Copy the ACTUAL frontend folder (this is the missing step)
 COPY frontend/ ./frontend/
 
-# 3. Build React (CD into the folder first so react-scripts finds the source)
+# 3. Move INTO the frontend folder to run the build
 RUN cd frontend && npm run build
 
 # Stage 2: Build the Python Flask Application
@@ -26,12 +26,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 5. Copy backend source
 COPY backend/ ./backend/
 
-# 6. Copy the build output from Stage 1
-# Note: React creates the 'build' folder inside 'frontend'
+# 6. Copy React build output from Stage 1
+# Since we built inside /app/frontend, the output is in /app/frontend/build
 COPY --from=build /app/frontend/build ./build
 
 # Run from the backend directory
 WORKDIR /app/backend
 
-# Use Gunicorn for production serving on Cloud Run
+# Use Gunicorn for production
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
