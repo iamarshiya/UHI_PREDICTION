@@ -1,20 +1,47 @@
-from flask import Flask,request,jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import joblib
 import os
+import pandas as pd
 
+# Import your custom modules
 from gee_engine import extract
 from locality import add_locality
 from livability import compute
 from analytics import enrich_dataframe
 from map_generator import generate_current_heatmap, generate_future_heatmap
 
-app = Flask(__name__)
+# 1. Initialize Flask to serve the React 'build' folder
+# Fixed path: '../build' because Dockerfile puts build at /app/build 
+# and runs main.py from /app/backend
+app = Flask(__name__, static_folder='../build', static_url_path='/')
 CORS(app)
 
+# 2. Load your ML Model
+model = joblib.load("uhi_model.pkl")
+
+FEATURES = [
+    "NDVI", "NDBI", "EVI", "SAVI", "Albedo",
+    "MNDWI", "IBI", "Elevation", "Slope", "NightLights"
+]
+
+# --- FRONTEND ROUTES ---
+
 @app.route("/")
+def serve():
+    """Serves the main React application."""
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def static_proxy(path):
+    """Serves static files (JS, CSS, Images) for React."""
+    return send_from_directory(app.static_folder, path)
+
+# --- API ROUTES ---
+
+@app.route("/api/status")
 def home():
-    return "Urban Heat Island AI Backend Running"
+    return jsonify({"status": "Urban Heat Island AI Backend Running"})
 
 def df_to_geojson(df, category):
     features = []
@@ -31,16 +58,12 @@ def df_to_geojson(df, category):
         features.append(feature)
     return features
 
-model = joblib.load("uhi_model.pkl")
-
-FEATURES = [
-"NDVI","NDBI","EVI","SAVI","Albedo",
-"MNDWI","IBI","Elevation","Slope","NightLights"
-]
-
 @app.route("/analyze")
 def analyze():
     city = request.args.get("city")
+    if not city:
+        return jsonify({"error": "City parameter is required"}), 400
+        
     df = extract(city)
     df["prediction"] = model.predict(df[FEATURES])
     df = compute(df)
@@ -89,6 +112,9 @@ def generate_maps():
         "future_map": future_map_html
     })
 
-if __name__=="__main__":
-    port = int(os.environ.get("PORT", 5001))
-    app.run(host="127.0.0.1", port=port, debug=False)
+# --- SERVER START ---
+# Note: Google Cloud Run will use the 'gunicorn' command in the Dockerfile, 
+# not this 'app.run' block, but it's good to keep for local testing.
+if os.name == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port, debug=False)
