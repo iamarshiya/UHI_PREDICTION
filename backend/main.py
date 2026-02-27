@@ -121,6 +121,11 @@ def analyze():
         print(f"ANALYSIS ERROR: {e}")
         return jsonify({"error": str(e)}), 500
 
+@app.errorhandler(404)
+def catch_all(e):
+    # This ensures that any route not found by Flask is handled by React
+    return send_from_directory(app.static_folder, 'index.html')
+
 # --- SERVER START ---
 
 if os.name == "__main__":

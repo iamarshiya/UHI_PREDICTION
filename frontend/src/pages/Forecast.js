@@ -55,7 +55,8 @@ export default function Forecast() {
     setLoading(true);
     setErrorMsg("");
     try {
-      const resData = await fetch("/analyze?city=Pune");
+      const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:5001";
+      const resData = await fetch(`${apiUrl}/analyze?city=Pune`);
       if (!resData.ok) throw new Error("Failed to fetch data.");
       const dataJson = await resData.json();
       

@@ -124,7 +124,8 @@ export default function Dashboard() {
     setLoading(true);
     setErrorMsg("");
     try {
-      const res = await fetch(`/analyze?city=Pune`);
+      const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:5001";
+      const res = await fetch(`${apiUrl}/analyze?city=Pune`);
       if (!res.ok) throw new Error("Failed to fetch data from backend. Make sure the python backend is running locally on port 5001.");
       
       const data = await res.json();
