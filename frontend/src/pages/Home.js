@@ -255,7 +255,7 @@ function ChatBot({ open, setOpen }) {
     // Background fetch the contextual data for Pune
     const fetchCityData = async () => {
       try {
-         const apiUrl = process.env.REACT_APP_API_URL || "https://climateriskai-502583370638.asia-south1.run.app";
+         const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:5001";
          const res = await fetch(`${apiUrl}/analyze?city=Pune`);
          const data = await res.json();
          setCityData(data);
