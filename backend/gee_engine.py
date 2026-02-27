@@ -7,7 +7,16 @@ import datetime
 
 print("IMPORTS DONE")
 
-ee.Initialize(project="project-8dd5a2c6-c802-4fd1-8eb")
+import google.auth # Add this import
+
+# Get the default credentials from the Cloud Run environment
+credentials, project_id = google.auth.default()
+
+# Initialize with the specific project and credentials
+ee.Initialize(
+    credentials=credentials,
+    project="project-8dd5a2c6-c802-4fd1-8eb"
+)
 
 def mask_s2_clouds(image):
     qa = image.select('QA60')
