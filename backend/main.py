@@ -21,19 +21,13 @@ CORS(app)
 # 2. Initialize Earth Engine with Service Account credentials
 initialize_ee()
 
-# 3. Load and Patch ML Model for Cloud Run (CPU-only environment)
-def patch_model(model_obj):
-    """Bypasses XGBoost 'gpu_id' AttributeError on CPU environments."""
-    if not hasattr(model_obj, 'gpu_id'):
-        model_obj.gpu_id = None
-    return model_obj
+# 3. Load the model
+model = joblib.load("uhi_model.pkl")
 
-try:
-    model = joblib.load("uhi_model.pkl")
-    model = patch_model(model)
-    print("MODEL LOADED AND PATCHED")
-except Exception as e:
-    print(f"ERROR LOADING MODEL: {e}")
+# THE FIX: Add this line right after loading
+if not hasattr(model, 'gpu_id'):
+    model.gpu_id = None
+print("MODEL LOADED AND PATCHED")
 
 # Define the features exactly as expected by your trained model
 FEATURES = [
