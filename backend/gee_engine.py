@@ -7,7 +7,7 @@ import datetime
 
 print("IMPORTS DONE")
 
-ee.Initialize(project="project-7d1a0aae-b957-46be-aa3")
+ee.Initialize(project="project-8dd5a2c6-c802-4fd1-8eb")
 
 def mask_s2_clouds(image):
     qa = image.select('QA60')
