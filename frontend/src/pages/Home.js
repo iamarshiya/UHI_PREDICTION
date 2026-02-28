@@ -130,7 +130,7 @@ function Hero({ onOpenChat }) {
 
   return (
     <section style={{ background: "linear-gradient(135deg, #fff 0%, #f0fdf4 50%, #fff 100%)", padding: "80px 0", overflow: "hidden" }}>
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
+      <div className="hero-grid" style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
 
         {/* LEFT */}
         <div style={{ animation: "fadeIn 0.9s ease forwards" }}>
@@ -158,7 +158,7 @@ function Hero({ onOpenChat }) {
           </p>
 
           {/* ── Buttons ── */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 380 }}>
+          <div className="hero-buttons" style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 380 }}>
 
             {/* Know Your Locality — full width */}
             <button 
@@ -223,7 +223,7 @@ function Hero({ onOpenChat }) {
         </div>
 
         {/* RIGHT */}
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "32px 0" }}>
+        <div className="earth-visual-container" style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "32px 0" }}>
           <EarthVisual />
         </div>
       </div>
@@ -491,7 +491,7 @@ function GlobalFooter() {
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px" }}>
 
         {/* ── Top grid: brand + 3 link cols ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1fr", gap: 48, paddingBottom: 48 }}>
+        <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1fr", gap: 48, paddingBottom: 48 }}>
 
           {/* Brand col */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -557,7 +557,7 @@ function GlobalFooter() {
         <div style={{ borderTop: "1px solid #1f2937" }} />
 
         {/* ── Bottom bar ── */}
-        <div style={{ padding: "20px 0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+        <div className="footer-bottom" style={{ padding: "20px 0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
 
           {/* Copyright */}
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#4b5563" }}>

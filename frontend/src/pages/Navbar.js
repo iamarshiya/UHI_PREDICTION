@@ -30,7 +30,7 @@ export default function Navbar() {
         transition: "box-shadow 0.3s"
       }}>
         {/* Logo + links + CTA */}
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "14px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+        <div className="navbar-container" style={{ maxWidth: 1280, margin: "0 auto", padding: "14px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
 
           {/* Logo */}
           <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, textDecoration: "none" }}>
@@ -48,7 +48,7 @@ export default function Navbar() {
           </Link>
 
           {/* Nav links */}
-          <div style={{ display: "flex", alignItems: "center", flex: 1, justifyContent: "center", gap: 4 }}>
+          <div className="nav-links" style={{ display: "flex", alignItems: "center", flex: 1, justifyContent: "center", gap: 4 }}>
             {NAV_LINKS.map((link) => {
               const isActive = location.pathname === link.path;
               return (
@@ -70,7 +70,7 @@ export default function Navbar() {
 
         {/* ── Community Feedback strip ── */}
         <div style={{ borderTop: "1px solid #f3f4f6", background: "#f0fdf4" }}>
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "8px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="nav-feedback-strip" style={{ maxWidth: 1280, margin: "0 auto", padding: "8px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6b7280" }}>
               <svg width="14" height="14" fill="#22c55e" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />

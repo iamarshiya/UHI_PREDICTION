@@ -159,7 +159,7 @@ export default function Dashboard() {
 
       {/* ── Search Header ── */}
       <div style={{ background: "#ffffff", padding: "40px 32px 64px", borderBottom: "1px solid #f3f4f6" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24 }}>
+        <div className="dashboard-header" style={{ maxWidth: 1280, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24 }}>
           <div>
             <h1 style={{ fontSize: 36, fontWeight: 900, color: "#111827", letterSpacing: "-1px", marginBottom: 8 }}>
               City Analytics
@@ -220,7 +220,7 @@ export default function Dashboard() {
         ) : (
           <>
             {/* KPI Cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, marginBottom: 40 }}>
+            <div className="dashboard-kpi" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, marginBottom: 40 }}>
               <KpiCard label="Avg Heat Risk Score" value={kpiData.risk} sub="Score > 60 is High" trend="up" icon="🌡️" delay="0.05s" />
               <div onClick={() => setShowCriticalModal(true)} style={{ cursor: "pointer" }}>
                 <KpiCard label="Critical Risk Zones" value={criticalZonesList.length} sub="Tap to view localities" trend="up" icon="🚨" delay="0.1s" isClickable={true} />
@@ -231,7 +231,7 @@ export default function Dashboard() {
             </div>
 
             {/* Charts Grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 24, alignItems: "start" }}>
+            <div className="dashboard-charts" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 24, alignItems: "start" }}>
 
               {/* Col 1: Top 10 Places & Trend */}
               <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
