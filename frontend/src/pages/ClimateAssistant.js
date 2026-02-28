@@ -80,7 +80,7 @@ export default function ClimateAssistant() {
     setAiMitigations([]); // Clear stale mitigations immediately
     try {
 
-      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyDEA5BwrrhSjJtqsdNoCtKWwPeW66NHHoM"; 
+      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyBHs4Om9M-aJu6NbYWVfTfgJJD67O9CB-4"; 
       
       // If no valid key provided (check for placeholder, not the real key)
       if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {

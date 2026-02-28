@@ -74,7 +74,7 @@ export default function Forecast() {
     setAiLoading(true);
     try {
 
-      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyAQHPlEhSPsFgkujYn2SQoFEw2G_wRquQE"; 
+      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyBHs4Om9M-aJu6NbYWVfTfgJJD67O9CB-4"; 
       
       // If no valid key provided, use dynamic fallbacks
       if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
