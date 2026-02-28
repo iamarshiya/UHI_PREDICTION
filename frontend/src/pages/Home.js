@@ -282,7 +282,7 @@ function ChatBot({ open, setOpen }) {
     setMessages(p => [...p, { from: "bot", text: "Analyzing real-time satellite & sensor data...", isLoading: true }]);
 
     try {
-      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyBLVR6W9dAHvalHVquw8HvAsV-1LghDU6w";
+      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyBHs4Om9M-aJu6NbYWVfTfgJJD67O9CB-4";
       
       let contextStr = "No live backend data available. Assume general Pune knowledge."; 
       if (cityData) {
