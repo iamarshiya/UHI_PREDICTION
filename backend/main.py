@@ -10,6 +10,7 @@ from city_to_roi import initialize_ee
 from locality import add_locality
 from livability import compute
 from analytics import enrich_dataframe
+from map_generator import generate_current_heatmap, generate_future_heatmap
 
 print("PROGRAM STARTED")
 
@@ -68,6 +69,22 @@ def df_to_geojson(df, category):
         feature["properties"]["category"] = category
         features.append(feature)
     return features
+
+@app.route("/generate-maps")
+def generate_maps():
+    city = request.args.get("city", "Pune")
+    df = extract(city)
+    df["prediction"] = model.predict(df[FEATURES])
+    df = compute(df)
+    df = enrich_dataframe(df, model, FEATURES)
+    
+    current_map_html = generate_current_heatmap(df, city)
+    future_map_html = generate_future_heatmap(df, city)
+    
+    return jsonify({
+        "current_map": current_map_html,
+        "future_map": future_map_html
+    })
 
 @app.route("/analyze")
 def analyze():
