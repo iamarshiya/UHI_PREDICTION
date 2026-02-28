@@ -1,21 +1,30 @@
 import requests
 import ee
 import os
-import google.auth # Added for Cloud Run authentication
+import google.auth
 
-# 1. Get the default credentials from the Cloud Run environment
-credentials, project_id = google.auth.default()
-
-
-ee.Initialize(
-    credentials=credentials,
-    project="project-8dd5a2c6-c802-4fd1-8eb"
-)
-
+# Define the Project ID as a variable for easy updates
+PROJECT_ID = "project-8dd5a2c6-c802-4fd1-8eb"
 API_KEY = "AIzaSyDLJ41jOwhZCitWvqc7ot8UAPsvGVTxq4o"
 
+def initialize_ee():
+    """Initializes Earth Engine using Cloud Run Service Account credentials."""
+    try:
+        # 1. Get the default credentials from the Cloud Run environment
+        credentials, project_id = google.auth.default()
+
+        # 2. Initialize Earth Engine with those credentials
+        # This prevents the "Please authorize access" error in Cloud Run
+        ee.Initialize(
+            credentials=credentials,
+            project=PROJECT_ID
+        )
+        print("Earth Engine Initialized Successfully")
+    except Exception as e:
+        print(f"EE Initialization Failed: {e}")
+
 def get_roi(city):
-    # Standard Geocoding request
+    """Standard Geocoding request to find the center of the city."""
     url = f"https://maps.googleapis.com/maps/api/geocode/json?address={city},India&key={API_KEY}"
     
     response = requests.get(url)
