@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useNavigate } from "react-router-dom"; // Added useNavigate
 
 /* ══════════════════════════════════════════
@@ -282,7 +281,7 @@ function ChatBot({ open, setOpen }) {
     setMessages(p => [...p, { from: "bot", text: "Analyzing real-time satellite & sensor data...", isLoading: true }]);
 
     try {
-      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyBHs4Om9M-aJu6NbYWVfTfgJJD67O9CB-4";
+      const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:5001";
       
       let contextStr = "No live backend data available. Assume general Pune knowledge."; 
       if (cityData) {
@@ -291,37 +290,20 @@ function ChatBot({ open, setOpen }) {
          const safe = (cityData.rankings?.most_livable || []).slice(0, 10).map(x => `${x.locality} (${x.risk.toFixed(1)})`).join(", ");
          contextStr = `Current City: Pune. Top 10 High-Risk Heat Zones: ${highRisk}. Safest / Coolest areas: ${safe}.`;
       }
+
+      const res = await fetch(`${apiUrl}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: t, context: contextStr })
+      });
       
-      const prompt = `
-        You are CityCare AI, an Urban Heat Island and Climate Assistant for Pune.
-        Here is the latest realtime satellite data report context from our backend: ${contextStr}
-        
-        The user asks: "${t}"
-        
-        Provide a concise, helpful, and scientific answer in 1-2 short paragraphs. Be conversational but authoritative. Do not use asterisks or markdown, keep it plain text.
-      `;
-
-      // Ensure we don't accidentally skip if the user provided their REAL api key as a fallback
-      if (!apiKey || apiKey === "[GCP_API_KEY]") {
-           // Fallback if key fails
-           setTimeout(() => {
-              setMessages(p => {
-                 const newMsgs = [...p];
-                 return [...newMsgs, { from: "bot", text: "I'm running in fallback mode without a valid Gemini API Key. Ensure my Python API is running on port 5001." }];
-              });
-           }, 1500);
-           return;
-      }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-      const result = await model.generateContent(prompt);
-      const output = result.response.text().replace(/[\*\#\`]/g, '');
-
+      if (!res.ok) throw new Error("Backend chat failed");
+      const data = await res.json();
+      
       setMessages(p => {
          const newMsgs = [...p];
          newMsgs.pop();
-         return [...newMsgs, { from: "bot", text: output }];
+         return [...newMsgs, { from: "bot", text: data.response || "No response received." }];
       });
 
     } catch (err) {

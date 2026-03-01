@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { PUNE_LOCALITIES } from "./Dashboard";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { jsPDF } from "jspdf";
 
 const STYLES = `
@@ -80,45 +79,8 @@ export default function ClimateAssistant() {
     setAiMitigations([]); // Clear stale mitigations immediately
     try {
 
-      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyBHs4Om9M-aJu6NbYWVfTfgJJD67O9CB-4"; 
+      const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:5001";
       
-      // If no valid key provided (check for placeholder, not the real key)
-      if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
-         let fallbacks = [];
-         if (data.future_risk_3months > data.risk && data.future_risk_3months > 60) {
-           fallbacks = [
-             `URGENT: ${data.locality} is projected to see a dangerous heat spike to ${data.future_risk_3months?.toFixed(1)}. Mandate reflective roof coatings on all commercial buildings immediately.`,
-             `Deploy emergency cooling centers and misting stations in high-footfall areas within the next 45 days.`,
-             `Initiate strict green-corridor planting along major concrete arteries to disrupt the anticipated heat-trapping effect.`
-           ];
-         } else if (data.future_risk_3months < data.risk) {
-           fallbacks = [
-             `${data.locality} is showing a cooling trend. Enhance existing rainwater harvesting to maintain soil moisture.`,
-             `Continue monitoring canopy growth. Consider minor tactical urbanism like shaded bus stops.`,
-             `Implement community heat-awareness programs to sustain the current positive cooling trajectory.`
-           ];
-         } else {
-           fallbacks = [
-             `Risk in ${data.locality} remains elevated but stable. Increase tree canopy coverage along main roads over the next quarter.`,
-             `Incentivize residents to adopt cool roofs and vertical gardens.`,
-             `Map out highly vulnerable civic zones for localized shading interventions.`
-           ];
-         }
-         
-         // Simulate network delay for effect
-         setTimeout(() => {
-           setAiMitigations(fallbacks);
-           setAiLoading(false);
-         }, 1500);
-         return;
-      }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.5-flash",
-        generationConfig: { temperature: 0.85, topP: 0.95 }
-      });
-
       const prompt = `
         You are an expert Urban Planner and Climate Scientist. 
         You are analyzing the locality of ${data.locality} in Pune city.
@@ -138,19 +100,23 @@ export default function ClimateAssistant() {
         Keep each point to one sentence, crisp and punchy. Return ONLY a JSON string array like this: ["Point 1", "Point 2", "Point 3"].
       `;
 
-      const result = await model.generateContent(prompt);
-      const output = result.response.text();
+      const res = await fetch(`${apiUrl}/api/mitigations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locality: data.locality, prompt, model: "gemini-2.5-flash", temperature: 0.85 })
+      });
       
-      try {
-        const parsed = JSON.parse(output.replace(/\`\`\`json|\`\`\`/g, '').trim());
-        setAiMitigations(parsed);
-      } catch (e) {
-        console.error("Failed to parse Gemini JSON:", e, output);
-        setAiMitigations(["Establish dedicated green corridors to disrupt heat trapping.", "Enforce reflective paving materials on new residential projects.", "Map out highly vulnerable civic zones for immediate cooling intervention."]);
+      if (!res.ok) throw new Error("Backend mitigations failed");
+      const resData = await res.json();
+      
+      if (resData.mitigations && resData.mitigations.length > 0) {
+        setAiMitigations(resData.mitigations);
+      } else {
+        throw new Error("Empty mitigations returned");
       }
     } catch (err) {
       console.error("Gemini AI API Error:", err);
-      // Contextual fallback if rate-limited
+      // Contextual fallback if network/backend fails
       setAiMitigations([
         `Implement emergency cooling interventions such as temporary shading and misting systems in ${data.locality}'s densest sectors.`,
         `Mandate cool-roof coatings for all new commercial developments to reduce systemic albedo retention.`,
@@ -365,60 +331,51 @@ export default function ClimateAssistant() {
       doc.text("AI City-Wide Strategic Summary", 105, y, { align: "center" });
       y += 15;
 
-      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyDEA5BwrrhSjJtqsdNoCtKWwPeW66NHHoM";
-      // Ensure we don't accidentally skip if the user provided their REAL api key as a fallback
-      if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
-           doc.setFontSize(11);
-           doc.setFont("helvetica", "normal");
-           const fallbackText = "Due to API key constraints, a live Gemini generation was skipped. However, based on Pune's current metrics:\n\n1. Macro-Policy: Enforce strict tree-canopy preservation policies across all high-risk urban sprawl zones (e.g. Kothrud, Viman Nagar).\n\n2. Infrastructure: Introduce city-wide cool-roof mandates for commercial buildings to combat systemic albedo absorption, alongside misting stations in primary plazas.\n\n3. Community: Establish interconnected green corridors linking isolated community parks to restore natural wind channels, incentivizing local citizen maintenance groups.";
-           const splitText = doc.splitTextToSize(fallbackText, 170);
-           doc.text(splitText, 20, y);
-      } else {
-         try {
-           doc.setFontSize(11);
-           doc.setFont("helvetica", "italic");
-           doc.text("Generating insights using Google Gemini AI...", 20, y);
-           
-           const genAI = new GoogleGenerativeAI(apiKey);
-           const model = genAI.getGenerativeModel({ 
-             model: "gemini-1.5-flash",
-             generationConfig: { temperature: 0.85, topP: 0.95 }
-           });
-           
-           // Construct a summarized payload to avoid token limits
-           const highRiskNames = (cityRankings.least_livable || []).slice(0, 5).map(l => l.locality).join(", ");
-           
-           const prompt = `
-             You are an expert Chief Resilience Officer for Pune city. 
-             Based on our live satellite data, the city average Heat Risk Score is ${avgRisk}/100. 
-             A total of ${totalPopRisk.toLocaleString()} citizens are currently vulnerable to heat stress.
-             The top 5 most critically at-risk localities are: ${highRiskNames}.
-             
-             Provide a high-level, strategic executive summary (3 short paragraphs) on how the city should allocate budget and resources over the next 3 months to mitigate this city-wide risk. Focus on systemic, macro-level urban policies. Do not use asterisks or markdown, just plain text.
-           `;
-           
-           const result = await model.generateContent(prompt);
-           const textResponse = result.response.text().replace(/[\*\#\`]/g, '');
-           
-           // Clear the "Generating..." text area
-           doc.setFillColor(255, 255, 255);
-           doc.rect(15, y - 5, 180, 10, 'F');
-           
-           doc.setFont("helvetica", "normal");
-           doc.setTextColor(0);
-           const splitText = doc.splitTextToSize(textResponse, 170);
-           doc.text(splitText, 20, y);
-           
-         } catch(e) {
-           console.error("AI Summary generation failed", e);
-           doc.setFillColor(255, 255, 255);
-           doc.rect(15, y - 5, 180, 10, 'F');
-           doc.setFont("helvetica", "normal");
-           doc.setTextColor(0);
-           const fallbackText = "Due to API request limits, a live Gemini generation was skipped. However, based on Pune's current metrics:\n\n1. Macro-Policy: Enforce strict tree-canopy preservation policies across all high-risk urban sprawl zones (e.g. Kothrud, Viman Nagar).\n\n2. Infrastructure: Introduce city-wide cool-roof mandates for commercial buildings to combat systemic albedo absorption, alongside misting stations in primary plazas.\n\n3. Community: Establish interconnected green corridors linking isolated community parks to restore natural wind channels, incentivizing local citizen maintenance groups.";
-           const fallbackSplit = doc.splitTextToSize(fallbackText, 170);
-           doc.text(fallbackSplit, 20, y);
-         }
+      try {
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "italic");
+        doc.text("Generating insights using Google Gemini AI...", 20, y);
+        
+        const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:5001";
+        const highRiskNames = (cityRankings.least_livable || []).slice(0, 5).map(l => l.locality).join(", ");
+        
+        const prompt = `
+          You are an expert Chief Resilience Officer for Pune city. 
+          Based on our live satellite data, the city average Heat Risk Score is ${avgRisk}/100. 
+          A total of ${totalPopRisk.toLocaleString()} citizens are currently vulnerable to heat stress.
+          The top 5 most critically at-risk localities are: ${highRiskNames}.
+          
+          Provide a high-level, strategic executive summary (3 short paragraphs) on how the city should allocate budget and resources over the next 3 months to mitigate this city-wide risk. Focus on systemic, macro-level urban policies. Do not use asterisks or markdown, just plain text.
+        `;
+        
+        const res = await fetch(`${apiUrl}/api/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+        
+        if (!res.ok) throw new Error("Backend generate failed");
+        const data = await res.json();
+        const textResponse = data.response;
+        
+        // Clear the "Generating..." text area
+        doc.setFillColor(255, 255, 255);
+        doc.rect(15, y - 5, 180, 10, 'F');
+        
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0);
+        const splitText = doc.splitTextToSize(textResponse, 170);
+        doc.text(splitText, 20, y);
+        
+      } catch(e) {
+        console.error("AI Summary generation failed", e);
+        doc.setFillColor(255, 255, 255);
+        doc.rect(15, y - 5, 180, 10, 'F');
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0);
+        const fallbackText = "Due to API request limits, a live Gemini generation was skipped. However, based on Pune's current metrics:\n\n1. Macro-Policy: Enforce strict tree-canopy preservation policies across all high-risk urban sprawl zones (e.g. Kothrud, Viman Nagar).\n\n2. Infrastructure: Introduce city-wide cool-roof mandates for commercial buildings to combat systemic albedo absorption, alongside misting stations in primary plazas.\n\n3. Community: Establish interconnected green corridors linking isolated community parks to restore natural wind channels, incentivizing local citizen maintenance groups.";
+        const fallbackSplit = doc.splitTextToSize(fallbackText, 170);
+        doc.text(fallbackSplit, 20, y);
       }
 
       doc.save("Pune_Comprehensive_Climate_Report.pdf");

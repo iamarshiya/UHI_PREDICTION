@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { PUNE_LOCALITIES } from "./Dashboard";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
@@ -37,6 +36,8 @@ export default function Forecast() {
     fetchData();
   }, []);
 
+  const [liveTemp, setLiveTemp] = useState("--");
+
   // Update locality stats & trigger AI when selected locality changes
   useEffect(() => {
     if (allFeatures.length > 0) {
@@ -44,9 +45,33 @@ export default function Forecast() {
       if (match) {
         setLocalityData(match);
         generateAIMitigations(selectedLocality, match.future_risk_3months, match.risk);
+        
+        // Fetch Live Temp from OpenWeather API using the API Key like Dashboard.js
+        const fetchLiveWeather = async () => {
+          setLiveTemp("Loading...");
+          try {
+            const apiKey = "67b92f0af5416edbfe58458f502b0a31";
+            let q = (selectedLocality === "Pune City" || selectedLocality === "Pune") ? "Pune" : `${selectedLocality}, Pune`;
+            let wRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${q}&appid=${apiKey}&units=metric`);
+            if (!wRes.ok) {
+                wRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Pune&appid=${apiKey}&units=metric`);
+            }
+            if (wRes.ok) {
+                const wData = await wRes.json();
+                setLiveTemp(wData.main.temp.toFixed(1) + "°C");
+            } else {
+                setLiveTemp(match.risk ? (match.risk * 0.15 + 28).toFixed(1) + "°C" : "--");
+            }
+          } catch (e) {
+            setLiveTemp(match.risk ? (match.risk * 0.15 + 28).toFixed(1) + "°C" : "--");
+          }
+        };
+        fetchLiveWeather();
+        
       } else {
         setLocalityData(null);
         setAiMitigations([]);
+        setLiveTemp("--");
       }
     }
   }, [allFeatures, selectedLocality]);
@@ -73,43 +98,8 @@ export default function Forecast() {
   const generateAIMitigations = async (locality, futureRisk, currentRisk) => {
     setAiLoading(true);
     try {
-
-      const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyBHs4Om9M-aJu6NbYWVfTfgJJD67O9CB-4"; 
+      const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:5001";
       
-      // If no valid key provided, use dynamic fallbacks
-      if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
-         let fallbacks = [];
-         if (futureRisk > currentRisk && futureRisk > 60) {
-           fallbacks = [
-             `URGENT: ${locality} is projected to see a dangerous heat spike to ${futureRisk?.toFixed(1)}. Mandate reflective roof coatings on all commercial buildings immediately.`,
-             `Deploy emergency cooling centers and misting stations in high-footfall areas within the next 45 days.`,
-             `Initiate strict green-corridor planting along major concrete arteries to disrupt the anticipated heat-trapping effect.`
-           ];
-         } else if (futureRisk < currentRisk) {
-           fallbacks = [
-             `${locality} is showing a cooling trend. Enhance existing rainwater harvesting to maintain soil moisture.`,
-             `Continue monitoring canopy growth. Consider minor tactical urbanism like shaded bus stops.`,
-             `Implement community heat-awareness programs to sustain the current positive cooling trajectory.`
-           ];
-         } else {
-           fallbacks = [
-             `Risk in ${locality} remains elevated but stable. Increase tree canopy coverage along main roads over the next quarter.`,
-             `Incentivize residents to adopt cool roofs and vertical gardens.`,
-             `Map out highly vulnerable civic zones for localized shading interventions.`
-           ];
-         }
-         
-         // Simulate network delay for effect
-         setTimeout(() => {
-           setAiMitigations(fallbacks);
-           setAiLoading(false);
-         }, 1500);
-         return;
-      }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
       const prompt = `
         You are an expert Urban Planner and Climate Scientist. 
         The locality of ${locality} in Pune city currently has an Urban Heat Island (UHI) risk score of ${currentRisk?.toFixed(1)}.
@@ -119,15 +109,19 @@ export default function Forecast() {
         Keep each point to one sentence, crisp and punchy. Return ONLY a JSON string array like this: ["Point 1", "Point 2", "Point 3"].
       `;
 
-      const result = await model.generateContent(prompt);
-      const output = result.response.text();
+      const res = await fetch(`${apiUrl}/api/mitigations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locality, prompt, model: "gemini-1.5-flash" })
+      });
       
-      try {
-        const parsed = JSON.parse(output.replace(/\`\`\`json|\`\`\`/g, '').trim());
-        setAiMitigations(parsed);
-      } catch (e) {
-        console.error("Failed to parse Gemini JSON:", e, output);
-        setAiMitigations(["Establish dedicated green corridors to disrupt heat trapping.", "Enforce reflective paving materials on new residential projects.", "Map out highly vulnerable civic zones for immediate cooling intervention."]);
+      if (!res.ok) throw new Error("Backend mitigations failed");
+      const data = await res.json();
+      
+      if (data.mitigations && data.mitigations.length > 0) {
+        setAiMitigations(data.mitigations);
+      } else {
+        throw new Error("Empty mitigations returned");
       }
     } catch (err) {
       console.error("Gemini AI API Error:", err);
@@ -220,7 +214,6 @@ export default function Forecast() {
                        </div>
                     </div>
                     
-                    {/* Secondary Metrics */}
                     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                       <div style={{ background: "#f9fafb", padding: "18px 20px", borderRadius: 16, border: "1px solid #f3f4f6", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
                         <div style={{ fontSize: 13, color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>Est. Local Population Exposed</div>
@@ -234,7 +227,7 @@ export default function Forecast() {
                         <div style={{ background: "#fffaf0", padding: "18px 20px", borderRadius: 16, border: "1px solid #fef08a", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
                           <div style={{ fontSize: 13, color: "#ca8a04", fontWeight: 700, textTransform: "uppercase" }}>Live Est. Temp</div>
                           <div style={{ fontSize: 24, fontWeight: 800, color: "#a16207", marginTop: 4 }}>
-                            {localityData?.risk ? (localityData.risk * 0.15 + 28).toFixed(1) + "°C" : "--"}
+                            {liveTemp}
                           </div>
                         </div>
                       </div>

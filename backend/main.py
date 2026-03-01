@@ -3,6 +3,7 @@ import joblib
 import pandas as pd
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+import google.generativeai as genai
 
 # Import custom project modules
 from gee_engine import extract
@@ -74,6 +75,11 @@ def df_to_geojson(df, category):
 def generate_maps():
     city = request.args.get("city", "Pune")
     df = extract(city)
+    
+    # FIX: Scale Albedo to match the existing XGBoost model's training data scale (0-10000)
+    if "Albedo" in df.columns:
+        df["Albedo"] = df["Albedo"] * 10000.0
+        
     df["prediction"] = model.predict(df[FEATURES])
     df = compute(df)
     df = enrich_dataframe(df, model, FEATURES)
@@ -95,6 +101,10 @@ def analyze():
     try:
         # Step 1: Extract satellite data from GEE
         df = extract(city)
+        
+        # FIX: Scale Albedo to match the existing XGBoost model's training data scale (0-10000)
+        if "Albedo" in df.columns:
+            df["Albedo"] = df["Albedo"] * 10000.0
         
         # Step 2: Run predictions
         df["prediction"] = model.predict(df[FEATURES])
@@ -131,6 +141,89 @@ def analyze():
     except Exception as e:
         print(f"ANALYSIS ERROR: {e}")
         return jsonify({"error": str(e)}), 500
+
+@app.route("/api/chat", methods=["POST"])
+def api_chat():
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return jsonify({"response": "Backend is missing GEMINI_API_KEY environment variable. Please configure it in Cloud Run."})
+        
+    data = request.json
+    user_message = data.get("message", "")
+    context = data.get("context", "General Pune Context")
+    
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        
+        prompt = f'''
+        You are CityCare AI, an Urban Heat Island and Climate Assistant for Pune.
+        Here is the latest realtime satellite data report context from our backend: {context}
+        
+        The user asks: "{user_message}"
+        
+        Provide a concise, helpful, and scientific answer in 1-2 short paragraphs. Be conversational but authoritative. Do not use asterisks or markdown, keep it plain text.
+        '''
+        
+        response = model.generate_content(prompt)
+        text = response.text.replace('*', '').replace('#', '').replace('`', '')
+        return jsonify({"response": text})
+    except Exception as e:
+        print(f"GEMINI CHAT ERROR: {e}")
+        return jsonify({"response": "Error communicating with the satellite AI servers."})
+
+@app.route("/api/mitigations", methods=["POST"])
+def api_mitigations():
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        # Fallback if no key is set yet
+        return jsonify({"mitigations": [
+            "Establish dedicated green corridors to disrupt heat trapping.",
+            "Enforce reflective paving materials on new residential projects.",
+            "Map out highly vulnerable civic zones for immediate cooling intervention."
+        ]})
+        
+    data = request.json
+    locality = data.get("locality", "Unknown")
+    prompt = data.get("prompt", "")
+    model_version = data.get("model", "gemini-1.5-flash")
+    temperature = data.get("temperature", 0.7)
+    
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel(model_name=model_version, generation_config={"temperature": temperature})
+        response = model.generate_content(prompt)
+        
+        import json
+        text = response.text.replace('```json', '').replace('```', '').strip()
+        parsed = json.loads(text)
+        return jsonify({"mitigations": parsed})
+    except Exception as e:
+        print(f"GEMINI MITIGATION ERROR: {e}")
+        return jsonify({"mitigations": [
+            f"Implement emergency cooling interventions such as temporary shading and misting systems in {locality}'s densest sectors.",
+            f"Mandate cool-roof coatings for all new commercial developments.",
+            f"Enhance localized green corridors to disrupt specific heat-trapping patterns."
+        ]})
+
+@app.route("/api/generate", methods=["POST"])
+def api_generate():
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return jsonify({"response": "Due to API key constraints, a live Gemini generation was skipped. However, based on Pune's current metrics:\n\n1. Macro-Policy: Enforce strict tree-canopy preservation policies across all high-risk urban sprawl zones (e.g. Kothrud, Viman Nagar).\n\n2. Infrastructure: Introduce city-wide cool-roof mandates for commercial buildings to combat systemic albedo absorption, alongside misting stations in primary plazas.\n\n3. Community: Establish interconnected green corridors linking isolated community parks to restore natural wind channels, incentivizing local citizen maintenance groups."})
+        
+    data = request.json
+    prompt = data.get("prompt", "")
+    
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-flash", generation_config={"temperature": 0.85, "top_p": 0.95})
+        response = model.generate_content(prompt)
+        text = response.text.replace('*', '').replace('#', '').replace('`', '')
+        return jsonify({"response": text})
+    except Exception as e:
+        print(f"GEMINI GENERATE ERROR: {e}")
+        return jsonify({"response": "Due to API request limits, a live Gemini generation was skipped. However, based on Pune's current metrics:\n\n1. Macro-Policy: Enforce strict tree-canopy preservation policies across all high-risk urban sprawl zones (e.g. Kothrud, Viman Nagar).\n\n2. Infrastructure: Introduce city-wide cool-roof mandates for commercial buildings to combat systemic albedo absorption, alongside misting stations in primary plazas.\n\n3. Community: Establish interconnected green corridors linking isolated community parks to restore natural wind channels, incentivizing local citizen maintenance groups."})
 
 @app.errorhandler(404)
 def catch_all(e):

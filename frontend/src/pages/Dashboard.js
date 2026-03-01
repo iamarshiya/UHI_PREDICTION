@@ -108,13 +108,36 @@ export default function Dashboard() {
         const pop = features.reduce((acc, p) => acc + (p.people_at_risk || 0), 0);
         const avgReslience = features.reduce((acc, p) => acc + (p.resilience_score || 0), 0) / features.length;
         
+        // Calculate the real live temperature (Land Surface Temperature) from the XGBoost prediction
+        const avgTemp = features.reduce((acc, p) => acc + (p.prediction || p.ambient_temp_celsius || 28.0), 0) / features.length;
+        
         setKpiData({
           risk: avgRisk.toFixed(2),
           greenDeficit: avgGreenDeficit.toFixed(2) + '%',
           population: pop.toLocaleString(),
           resilience: avgReslience.toFixed(2),
-          temp: (avgRisk * 0.15 + 28).toFixed(1) + "°C"
+          temp: "Loading..."
         });
+
+        const fetchLiveWeather = async () => {
+          try {
+            const apiKey = "67b92f0af5416edbfe58458f502b0a31";
+            let q = (targetLocality === "Pune City" || targetLocality === "Pune") ? "Pune" : `${targetLocality}, Pune`;
+            let wRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${q}&appid=${apiKey}&units=metric`);
+            if (!wRes.ok) {
+                wRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Pune&appid=${apiKey}&units=metric`);
+            }
+            if (wRes.ok) {
+                const wData = await wRes.json();
+                setKpiData(prev => ({ ...prev, temp: wData.main.temp.toFixed(1) + "°C" }));
+            } else {
+                setKpiData(prev => ({ ...prev, temp: avgTemp.toFixed(1) + "°C" }));
+            }
+          } catch (e) {
+            setKpiData(prev => ({ ...prev, temp: avgTemp.toFixed(1) + "°C" }));
+          }
+        };
+        fetchLiveWeather();
       } else {
         setKpiData({ risk: "N/A", greenDeficit: "N/A", population: "N/A", resilience: "N/A", temp: "N/A" });
       }
