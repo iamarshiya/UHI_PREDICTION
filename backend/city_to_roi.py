@@ -5,7 +5,7 @@ import google.auth
 
 # Define the Project ID as a variable for easy updates
 PROJECT_ID = "project-8dd5a2c6-c802-4fd1-8eb"
-API_KEY = "AIzaSyDLJ41jOwhZCitWvqc7ot8UAPsvGVTxq4o"
+API_KEY = "AIzaSyAkx28z2za3UzFI4wC4aoZVIrDPZtjdG3o"
 
 def initialize_ee():
     """Initializes Earth Engine using Cloud Run Service Account credentials."""
