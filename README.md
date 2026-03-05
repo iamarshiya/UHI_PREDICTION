@@ -79,8 +79,10 @@
    ```
    The application will run on `http://localhost:3000`.
 
-## 🤝 Contributing
-Contributions, issues, and feature requests are welcome!
+## 🤝 Contributors
+ [Astha Tayade]((https://www.linkedin.com/in/astha-tayade/))
+ [Aditi Nalawade]((https://www.linkedin.com/in/aditi-nalawade-18a036280/))
+ [Nasreen Nadaf]((https://www.linkedin.com/in/nasreen-nadaf-2b0973368/))
 
 ## 📜 License
 This project is licensed under the MIT License.
