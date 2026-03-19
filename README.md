@@ -80,7 +80,7 @@
    The application will run on `http://localhost:3000`.
 
 ## 🤝 Contributing
-Contributions, issues, and feature requests are welcome!
+Contributions, issues, and feature requests are welcome..
 
 ## 📜 License
 This project is licensed under the MIT License.
